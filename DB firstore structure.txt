@@ -1,0 +1,145 @@
+Firestore Collections & Documents
+1️⃣ users
+
+Stores both anonymous and registered users.
+
+users/{userId}:
+  isAnonymous: true/false
+  name: string (optional for anonymous)
+  email: string (optional)
+  phone: string (optional)
+  createdAt: timestamp
+  updatedAt: timestamp
+  walletBalance: number
+  transactions: array of transaction references or embedded objects
+  addresses: array of objects {
+      address: string
+      city: string
+      state: string
+      zip: string
+      country: string
+      default: boolean
+  }
+
+utm: {
+  source: "tiktok",        // where they came from (facebook, google, tiktok...)
+  medium: "ads",           // type of traffic (ads, organic, email...)
+  campaign: "launch"       // which campaign/ad group it belongs to
+}
+
+
+2️⃣ products(bch nbdlo tol ml firebase)
+
+Single or multiple products for MVP/future.
+
+products/{productId}:
+  title: string
+  subtitle: string
+  description: string
+  images: array of urls
+  videos: array of urls
+  price: number
+  compareAtPrice: number (for discount display)
+  discountPercentage: number
+
+*)  variants: array of objects {
+      variantId: string
+      title: string
+      SKU: string
+      stock: number
+      price: number (optional if variant differs)
+
+ex :
+  {
+      variantId: "red-small",
+      title: "Red - Small",
+      SKU: "SL-RED-S",
+      stock: 120,
+      price: 27.99
+    },
+    {
+      variantId: "white-large",
+      title: "White - Large",
+      SKU: "SL-WH-L",
+      stock: 60,
+      price: 31.99
+    }
+  }
+
+  soldCount: number
+  shippingETA: string
+  returnPolicy: string
+  urgencyTimerEnd: timestamp (optional)
+  createdAt: timestamp
+  updatedAt: timestamp
+
+3️⃣ orders
+
+Tracks all orders from users (manual dropshipping).
+
+orders/{orderId}:
+  userId: string (reference to users/{userId})
+  productId: string (reference to products/{productId})
+  variantId: string (optional, if product has variants)
+  quantity: number (for MVP = 1)
+  totalPrice: number
+  shippingAddress: object {
+      address,, city, state, zip, country
+  }
+  shippingOption: string (standard/express)
+  couponCode: string (optional)
+  paymentMethod: string (wallet, Payeer)
+  status: string (pending, purchased, shipped, delivered, refunded)
+  trackingNumber: string (optional)
+  supplier: string (manual: AliExpress, Shein, etc.)
+  createdAt: timestamp
+  updatedAt: timestamp
+
+4️⃣ deposits
+
+Tracks wallet top-ups (Payeer).
+
+deposits/{depositId}:
+  userId: string
+  amount: number
+  method: string ("Payeer")
+  status: string ("pending", "approved", "rejected")
+  createdAt: timestamp
+  updatedAt: timestamp
+
+5️⃣ transactions(add funds or purchase)
+
+Optional separate collection or embedded in users.transactions.
+
+transactions/{transactionId}:
+  userId: string
+  type: string ("deposit" or "purchase")
+  amount: number (+ for deposit, - for purchase)
+  orderId: string (optional, if type = purchase)
+  depositId: string (optional, if type = deposit)
+  createdAt: timestamp
+
+6️⃣ supportTickets
+
+For chat / email support.
+
+supportTickets/{ticketId}:
+  userId: string (nullable for anonymous)
+  subject: string
+  messages: array of {
+      sender: string ("user" or "admin")
+      message: string
+      timestamp: timestamp
+  }
+  status: string ("open", "closed")
+  createdAt: timestamp
+  updatedAt: timestamp
+
+7️⃣ adminMetrics ( for MVP dashboard)
+adminMetrics/{metricId}:
+  date: timestamp
+  totalOrders: number
+  totalDeposits: number
+  totalRefunds: number
+ all profit
+ Net Profit

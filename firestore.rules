@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Tout le monde peut lire et écrire (simplifié pour MVP sans Firebase Auth)
+      allow read, write: if true;
+    }
+    
+    // Products collection
+    match /products/{productId} {
+      // Lecture publique pour tous
+      allow read: if true;
+      // Écriture uniquement manuelle ou via admin
+      allow write: if false;
+    }
+    
+    // Orders collection
+    match /orders/{orderId} {
+      // Lecture et écriture pour tous (simplifié pour MVP)
+      allow read, write: if true;
+      
+      // Pour production, utiliser:
+      // allow read: if isOwner(resource.data.userId);
+      // allow create: if isSignedIn();
+      // allow update: if false; // Seulement admin peut update
+    }
+    
+    // Deposits collection
+    match /deposits/{depositId} {
+      // Lecture et écriture pour tous (simplifié pour MVP)
+      allow read, write: if true;
+      
+      // Pour production, utiliser:
+      // allow read: if isOwner(resource.data.userId);
+      // allow create: if isSignedIn();
+      // allow update: if false; // Seulement admin peut approuver
+    }
+    
+    // Transactions collection (optionnel)
+    match /transactions/{transactionId} {
+      allow read, write: if true;
+    }
+    
+    // Support tickets collection (optionnel)
+    match /supportTickets/{ticketId} {
+      allow read, write: if true;
+    }
+    
+    // Admin metrics (optionnel)
+    match /adminMetrics/{metricId} {
+      allow read: if true;
+      allow write: if false; // Géré par Cloud Functions
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "95477099575",
+    "project_id": "store-ebecf",
+    "storage_bucket": "store-ebecf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:95477099575:android:5de6e3cc2adfdc74b823b2",
+        "android_client_info": {
+          "package_name": "com.example.store_app2025"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDH06x4Mhld6sz3o8kIdbySUs3rsxobUN4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
