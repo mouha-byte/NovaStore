@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+// import 'package:flutter_animate/flutter_animate.dart'; // COMMENTED OUT - ALL ANIMATIONS DISABLED FOR PERFORMANCE
 import 'package:provider/provider.dart';
 import '../models/product_model.dart';
 import '../services/auth_service.dart';
@@ -32,24 +32,24 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_handleScroll);
+    // _scrollController.addListener(_handleScroll);
     
-    // Set offer end time to 24 hours from now
+    // // Set offer end time to 24 hours from now
     _offerEndTime = DateTime.now().add(const Duration(hours: 24));
-    _updateCountdown();
+    // _updateCountdown();
     
-    // Update countdown every second
-    Future.doWhile(() async {
-      await Future.delayed(const Duration(seconds: 1));
-      if (mounted) {
-        _updateCountdown();
-        return true;
-      }
-      return false;
-    });
+    // // Update countdown every second
+    // Future.doWhile(() async {
+    //   await Future.delayed(const Duration(seconds: 1));
+    //   if (mounted) {
+    //     _updateCountdown();
+    //     return true;
+    //   }
+    //   return false;
+    // });
     
-    // Auto-scroll brands carousel
-    _startBrandScroll();
+    // // Auto-scroll brands carousel
+    // _startBrandScroll();
   }
   
   void _startBrandScroll() {
@@ -207,8 +207,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                       ],
                     ),
                     child: const Icon(Icons.shopping_bag, color: Colors.white, size: 24),
-                  ).animate(onPlay: (controller) => controller.repeat())
-                    .shimmer(duration: 2000.ms, delay: 1000.ms),
+                  ),
                   const SizedBox(width: 12),
                   Text(
                     'NovaStore',
@@ -218,30 +217,24 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                       color: _isScrolled ? Colors.black : Colors.white,
                       letterSpacing: -0.5,
                     ),
-                  ).animate().fadeIn(duration: 600.ms),
+                  )
                 ],
               ),
               
               // Navigation Links
               Row(
                 children: [
-                  _buildNavLink('Features', () => _scrollToSection(4), context)
-                    .animate().fadeIn(delay: 100.ms).slideY(begin: -0.5, end: 0),
+                  _buildNavLink('Features', () => _scrollToSection(4), context),
                   const SizedBox(width: 12),
-                  _buildNavLink('Videos', () => _scrollToSection(5), context)
-                    .animate().fadeIn(delay: 200.ms).slideY(begin: -0.5, end: 0),
+                  _buildNavLink('Videos', () => _scrollToSection(5), context),
                   const SizedBox(width: 12),
-                  _buildNavLink('Reviews', () => _scrollToSection(9), context)
-                    .animate().fadeIn(delay: 300.ms).slideY(begin: -0.5, end: 0),
+                  _buildNavLink('Reviews', () => _scrollToSection(9), context),
                   const SizedBox(width: 12),
-                  _buildNavLink('Stories', () => _scrollToSection(10), context)
-                    .animate().fadeIn(delay: 400.ms).slideY(begin: -0.5, end: 0),
+                  _buildNavLink('Stories', () => _scrollToSection(10), context),
                   const SizedBox(width: 12),
-                  _buildNavLink('Pricing', () => _scrollToSection(14), context)
-                    .animate().fadeIn(delay: 500.ms).slideY(begin: -0.5, end: 0),
+                  _buildNavLink('Pricing', () => _scrollToSection(14), context),
                   const SizedBox(width: 12),
-                  _buildNavLink('FAQ', () => _scrollToSection(15), context)
-                    .animate().fadeIn(delay: 600.ms).slideY(begin: -0.5, end: 0),
+                  _buildNavLink('FAQ', () => _scrollToSection(15), context),
                   const SizedBox(width: 20),
                   ElevatedButton(
                     onPressed: _handleBuyNow,
@@ -262,8 +255,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                         const Icon(Icons.arrow_forward, size: 18),
                       ],
                     ),
-                  ).animate().fadeIn(delay: 700.ms).scale(delay: 700.ms),
-                ],
+                  )],
               ),
             ],
           ),
@@ -386,16 +378,8 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           }).toList(),
         );
       },
-    ).animate(onPlay: (controller) => controller.repeat())
-      .custom(
-        duration: 30000.ms,
-        builder: (context, value, child) {
-          return Transform.translate(
-            offset: Offset(-value * 2000, 0),
-            child: child,
-          );
-        },
-      );
+    )
+;
   }
 
   // ==================== SPONSORED BRANDS BANNER ====================
@@ -466,8 +450,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(Icons.verified, color: Colors.white, size: 16),
-                ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-                  .scale(duration: 1500.ms),
+                ),
                 const SizedBox(width: 12),
                 const Text(
                   'TRUSTED BY LEADING BRANDS',
@@ -480,8 +463,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                 ),
               ],
             ),
-          ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.5, end: 0),
-          
+          ),
           const SizedBox(height: 30),
           
           const Text(
@@ -493,9 +475,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               height: 1.2,
               letterSpacing: -1,
             ),
-          ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.3, end: 0),
-          
-          const SizedBox(height: 16),
+          ), const SizedBox(height: 16),
           
           Text(
             'Used and trusted by industry leaders worldwide',
@@ -505,8 +485,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               color: Colors.grey[600],
               height: 1.5,
             ),
-          ).animate().fadeIn(delay: 600.ms),
-          
+          ),
           const SizedBox(height: 50),
           
           // Auto-scrolling brands carousel
@@ -667,8 +646,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                 _buildBrandStat('99.9%', 'Satisfaction', Icons.sentiment_very_satisfied),
               ],
             ),
-          ).animate().fadeIn(delay: 800.ms).scale(delay: 800.ms),
-        ],
+          ) ],
       ),
     );
   }
@@ -692,9 +670,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
             ],
           ),
           child: Icon(icon, color: Colors.white, size: 24),
-        ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-          .scale(duration: 2000.ms, begin: const Offset(1, 1), end: const Offset(1.1, 1.1)),
-        const SizedBox(height: 12),
+        ),  const SizedBox(height: 12),
         ShaderMask(
           shaderCallback: (bounds) => const LinearGradient(
             colors: [Color(0xFF6366F1), Color(0xFFEC4899)],
@@ -706,9 +682,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               fontWeight: FontWeight.w900,
               color: Colors.white,
             ),
-          ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-            .shimmer(duration: 2000.ms, color: Colors.white.withOpacity(0.5)),
-        ),
+          ),  ),
         const SizedBox(height: 6),
         Text(
           label,
@@ -808,9 +782,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.workspace_premium, color: Colors.white, size: 18),
-                    ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-                      .scale(duration: 1500.ms, begin: const Offset(1, 1), end: const Offset(1.15, 1.15)),
-                    const SizedBox(width: 14),
+                    ),const SizedBox(width: 14),
                     const Text(
                       'TRUSTED BY EXPERTS',
                       style: TextStyle(
@@ -822,8 +794,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                     ),
                   ],
                 ),
-              ).animate().fadeIn(duration: 600.ms).scale(),
-              
+              ),
               const SizedBox(height: 30),
               
               const Text(
@@ -835,8 +806,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   height: 1.2,
                   letterSpacing: -1.5,
                 ),
-              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.3, end: 0),
-              
+              ),
               const SizedBox(height: 20),
               
               Text(
@@ -847,8 +817,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   color: Colors.grey[600],
                   height: 1.6,
                 ),
-              ).animate().fadeIn(delay: 400.ms),
-              
+              ),
               const SizedBox(height: 70),
               
               // Experts Grid
@@ -904,9 +873,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                       Icons.play_circle_outline,
                       size: 64,
                       color: Colors.white,
-                    ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-                      .scale(duration: 1500.ms, begin: const Offset(1, 1), end: const Offset(1.2, 1.2)),
-                    const SizedBox(height: 20),
+                    ),  const SizedBox(height: 20),
                     const Text(
                       'Watch All Expert Testimonials',
                       style: TextStyle(
@@ -956,8 +923,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                     ),
                   ],
                 ),
-              ).animate().fadeIn(delay: 800.ms).scale(delay: 800.ms),
-            ],
+              )  ],
           ),
         ),
       ),
@@ -1044,9 +1010,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                       size: 36,
                       color: Color(0xFF8B5CF6),
                     ),
-                  ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-                    .scale(duration: 1500.ms, begin: const Offset(1, 1), end: const Offset(1.15, 1.15)),
-                ),
+                  ), ),
               ),
               Positioned(
                 top: 12,
@@ -1195,8 +1159,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           ),
         ],
       ),
-    ).animate().fadeIn(delay: Duration(milliseconds: delay)).scale(delay: Duration(milliseconds: delay));
-  }
+    ); }
 
 
 
@@ -1254,8 +1217,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 800.ms);
-  }
+    );  }
 
   Widget _buildHeroText(BuildContext context) {
     return Column(
@@ -1281,9 +1243,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               ),
             ],
           ),
-        ).animate().fadeIn(delay: 200.ms).slideX(),
-        
-        const SizedBox(height: 30),
+        ), const SizedBox(height: 30),
         
         // Main Headline
         Text(
@@ -1295,8 +1255,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
             height: 1.1,
             letterSpacing: -2,
           ),
-        ).animate().fadeIn(delay: 400.ms).slideY(),
-        
+        ),
         const SizedBox(height: 20),
         
         // Subheadline
@@ -1308,8 +1267,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
             height: 1.5,
             fontWeight: FontWeight.w400,
           ),
-        ).animate().fadeIn(delay: 600.ms).slideY(),
-        
+        ),
         const SizedBox(height: 40),
         
         // Trust Indicators
@@ -1321,8 +1279,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
             _buildMiniTrustBadge(Icons.local_shipping, 'Free Shipping'),
             _buildMiniTrustBadge(Icons.star, '4.9/5 (1,200+ Reviews)'),
           ],
-        ).animate().fadeIn(delay: 800.ms),
-        
+        ),
         const SizedBox(height: 50),
         
         // CTA Buttons
@@ -1355,8 +1312,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               ),
             ),
           ],
-        ).animate().fadeIn(delay: 1000.ms).scale(),
-        
+        ),
         const SizedBox(height: 16),
         
         // Secondary Info
@@ -1366,8 +1322,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
             color: Colors.white.withOpacity(0.8),
             fontSize: 14,
           ),
-        ).animate().fadeIn(delay: 1200.ms),
-      ],
+        ), ],
     );
   }
 
@@ -1464,12 +1419,10 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   ),
                 ],
               ),
-            ).animate().fadeIn(delay: 1400.ms).scale(),
-          ),
+            ) ),
         ],
       ),
-    ).animate().fadeIn(delay: 600.ms).scale();
-  }
+    );  }
 
   // ==================== PROBLEM SECTION ====================
   Widget _buildProblemSection(BuildContext context) {
@@ -1517,8 +1470,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.warning_rounded, color: Colors.white, size: 16),
-                    ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-                      .shake(duration: 1000.ms, hz: 2),
+                    )  ,
                     const SizedBox(width: 12),
                     const Text(
                       'THE PROBLEM',
@@ -1531,8 +1483,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                     ),
                   ],
                 ),
-              ).animate().fadeIn(duration: 600.ms).scale(),
-              
+              ),
               const SizedBox(height: 40),
               
               const Text(
@@ -1545,8 +1496,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   color: Colors.black,
                   letterSpacing: -1,
                 ),
-              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.3, end: 0),
-              
+              ),
               const SizedBox(height: 30),
               
               Text(
@@ -1558,9 +1508,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   height: 1.8,
                   fontWeight: FontWeight.w400,
                 ),
-              ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.3, end: 0),
-              
-              const SizedBox(height: 60),
+              ), const SizedBox(height: 60),
               
               // Pain Points Grid with images
               LayoutBuilder(
@@ -1667,9 +1615,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   Text(
                     emoji,
                     style: const TextStyle(fontSize: 48),
-                  ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-                    .shake(duration: 1000.ms, hz: 1),
-                  const SizedBox(height: 12),
+                  ), const SizedBox(height: 12),
                   Text(
                     title,
                     style: const TextStyle(
@@ -1694,8 +1640,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           ],
         ),
       ),
-    ).animate().fadeIn(delay: Duration(milliseconds: delay)).scale(delay: Duration(milliseconds: delay));
-  }
+    ); }
 
 
 
@@ -1754,8 +1699,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.check_circle, color: Colors.white, size: 16),
-                    ).animate(onPlay: (controller) => controller.repeat())
-                      .shimmer(duration: 2000.ms, color: Colors.white),
+                    ),
                     const SizedBox(width: 12),
                     const Text(
                       'THE SOLUTION',
@@ -1768,8 +1712,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                     ),
                   ],
                 ),
-              ).animate().fadeIn(duration: 600.ms).scale(),
-              
+              ),
               const SizedBox(height: 40),
               
               Row(
@@ -1785,8 +1728,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                         color: Colors.black,
                         letterSpacing: -1.5,
                       ),
-                    ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.3, end: 0),
-                  ),
+                    )),
                 ],
               ),
               
@@ -1801,8 +1743,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   height: 1.8,
                   fontWeight: FontWeight.w400,
                 ),
-              ).animate().fadeIn(delay: 400.ms).slideX(begin: 0.3, end: 0),
-              
+              ),
               const SizedBox(height: 70),
               
               // Benefits Grid with luxury design
@@ -1919,9 +1860,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                     ],
                   ),
                 ),
-              ).animate(onPlay: (controller) => controller.repeat())
-                .shimmer(duration: 3000.ms, color: Colors.white.withOpacity(0.3)),
-            ),
+              ),  ),
             // Content
             Padding(
               padding: const EdgeInsets.all(32),
@@ -1942,9 +1881,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                       ],
                     ),
                     child: Icon(icon, size: 42, color: color),
-                  ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-                    .scale(duration: 1500.ms, begin: const Offset(1, 1), end: const Offset(1.15, 1.15)),
-                  const SizedBox(height: 24),
+                  ), const SizedBox(height: 24),
                   Text(
                     title,
                     textAlign: TextAlign.center,
@@ -1986,8 +1923,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           ],
         ),
       ),
-    ).animate().fadeIn(delay: Duration(milliseconds: delay)).scale(delay: Duration(milliseconds: delay));
-  }
+    ); }
 
 
 
@@ -2035,8 +1971,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                     letterSpacing: 2,
                   ),
                 ),
-              ).animate().fadeIn().slideY(),
-              
+              ),
               const SizedBox(height: 30),
               
               const Text(
@@ -2048,8 +1983,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   height: 1.2,
                   letterSpacing: -1,
                 ),
-              ).animate().fadeIn(delay: 200.ms).slideY(),
-              
+              ),
               const SizedBox(height: 20),
               
               Text(
@@ -2060,8 +1994,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   color: Colors.grey[600],
                   height: 1.6,
                 ),
-              ).animate().fadeIn(delay: 400.ms),
-              
+              ),
               const SizedBox(height: 70),
               
               // Features Grid
@@ -2206,9 +2139,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                       ],
                     ),
                     child: Icon(icon, size: 38, color: color),
-                  ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-                    .scale(duration: 1800.ms, begin: const Offset(1, 1), end: const Offset(1.12, 1.12)),
-                  const SizedBox(height: 20),
+                  ),  const SizedBox(height: 20),
                   Text(
                     title,
                     textAlign: TextAlign.center,
@@ -2249,7 +2180,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           ],
         ),
       ),
-    ).animate().fadeIn(delay: Duration(milliseconds: delayMs)).scale(delay: Duration(milliseconds: delayMs));
+    );
   }
 
   // ==================== HOW IT WORKS ====================
@@ -2270,8 +2201,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   color: Color(0xFF6366F1),
                   letterSpacing: 2,
                 ),
-              ).animate().fadeIn().slideY(),
-              
+              ),
               const SizedBox(height: 20),
               
               const Text(
@@ -2282,8 +2212,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   fontWeight: FontWeight.w900,
                   height: 1.2,
                 ),
-              ).animate().fadeIn(delay: 200.ms).slideY(),
-              
+              ),
               const SizedBox(height: 70),
               
               Column(
@@ -2350,8 +2279,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           ),
         ),
       ],
-    ).animate().fadeIn(delay: Duration(milliseconds: number * 200)).slideX();
-  }
+    );}
 
   // ==================== TESTIMONIALS ====================
   Widget _buildTestimonialsSection(BuildContext context) {
@@ -2371,8 +2299,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   color: Color(0xFF6366F1),
                   letterSpacing: 2,
                 ),
-              ).animate().fadeIn().slideY(),
-              
+              ),
               const SizedBox(height: 20),
               
               const Text(
@@ -2383,8 +2310,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   fontWeight: FontWeight.w900,
                   height: 1.2,
                 ),
-              ).animate().fadeIn(delay: 200.ms).slideY(),
-              
+              ),
               const SizedBox(height: 16),
               
               // Star Rating
@@ -2398,8 +2324,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
                 ],
-              ).animate().fadeIn(delay: 400.ms),
-              
+              ),
               const SizedBox(height: 70),
               
               // Testimonials Grid
@@ -2527,8 +2452,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           ),
         ],
       ),
-    ).animate().fadeIn(delay: Duration(milliseconds: delayMs)).slideY();
-  }
+    ); }
 
   // ==================== CUSTOMER STORIES ====================
   Widget _buildCustomerStoriesSection(BuildContext context) {
@@ -2570,8 +2494,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                     letterSpacing: 1.5,
                   ),
                 ),
-              ).animate().fadeIn(duration: 600.ms).scale(delay: 200.ms),
-              
+              ),
               const SizedBox(height: 20),
               
               Text(
@@ -2583,8 +2506,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   height: 1.1,
                 ),
                 textAlign: TextAlign.center,
-              ).animate().fadeIn(delay: 200.ms, duration: 600.ms).slideY(),
-              
+              ),
               const SizedBox(height: 16),
               
               Text(
@@ -2595,7 +2517,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
-              ).animate().fadeIn(delay: 400.ms, duration: 600.ms),
+              ),
             ],
           ),
           
@@ -2711,8 +2633,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               elevation: 8,
               shadowColor: const Color(0xFFEC4899).withOpacity(0.5),
             ),
-          ).animate().fadeIn(delay: 1200.ms).scale(),
-          
+          ),
           const SizedBox(height: 20),
           
           // Social Proof Stats
@@ -2725,7 +2646,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               const SizedBox(width: 40),
               _buildSocialProofStat('15K+', 'Video Reviews'),
             ],
-          ).animate().fadeIn(delay: 1400.ms).slideY(),
+          ),
         ],
       ),
     );
@@ -2958,7 +2879,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           ),
         ],
       ),
-    ).animate().fadeIn(delay: Duration(milliseconds: delay)).slideY();
+    );
   }
 
   Widget _buildSocialProofStat(String number, String label) {
@@ -3028,9 +2949,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           ),
         ),
       ],
-    ).animate().fadeIn().scale();
-  }
-
+    );}
   // ==================== PRICING SECTION ====================
   Widget _buildPricingSection(BuildContext context) {
     final originalPrice = widget.product.price * 1.5;
@@ -3182,8 +3101,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               ),
             ],
           ),
-        ).animate().fadeIn(delay: 200.ms).scale(),
-      ),
+        ) ),
     );
   }
 
@@ -3224,8 +3142,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   color: Color(0xFF6366F1),
                   letterSpacing: 2,
                 ),
-              ).animate().fadeIn().slideY(),
-              
+              ),
               const SizedBox(height: 20),
               
               const Text(
@@ -3236,9 +3153,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   fontWeight: FontWeight.w900,
                   height: 1.2,
                 ),
-              ).animate().fadeIn(delay: 200.ms).slideY(),
-              
-              const SizedBox(height: 60),
+              ),const SizedBox(height: 60),
               
               _buildFAQItem('How long does shipping take?', 'We offer free shipping worldwide. Most orders arrive within 3-5 business days. You\'ll receive a tracking number as soon as your order ships.'),
               _buildFAQItem('What\'s your return policy?', 'We offer a 30-day money-back guarantee. If you\'re not completely satisfied, simply return it for a full refund. No questions asked.'),
@@ -3286,7 +3201,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           ],
         ),
       ),
-    ).animate().fadeIn().slideY();
+    );
   }
 
   // ==================== FINAL CTA ====================
@@ -3369,11 +3284,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                       size: 70,
                       color: Colors.white,
                     ),
-                  ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-                    .scale(duration: 2000.ms, begin: const Offset(1, 1), end: const Offset(1.15, 1.15))
-                    .then()
-                    .shimmer(duration: 1500.ms, color: Colors.white.withOpacity(0.5)),
-                  
+                  ),
                   const SizedBox(height: 40),
                   
                   const Text(
@@ -3393,8 +3304,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                         ),
                       ],
                     ),
-                  ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.3, end: 0),
-                  
+                  ),
                   const SizedBox(height: 24),
                   
                   const Text(
@@ -3413,8 +3323,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                         ),
                       ],
                     ),
-                  ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.3, end: 0),
-                  
+                  ),
                   const SizedBox(height: 50),
                   
                   // Stats row
@@ -3437,8 +3346,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                       ),
                       _buildCTAStat('99%', 'Satisfaction'),
                     ],
-                  ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.3, end: 0),
-                  
+                  ),
                   const SizedBox(height: 60),
                   
                   // Main CTA button
@@ -3489,8 +3397,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                         ],
                       ),
                     ),
-                  ).animate().fadeIn(delay: 800.ms).scale(delay: 800.ms, duration: 600.ms),
-                  
+                  ),
                   const SizedBox(height: 40),
                   
                   // Trust badges
@@ -3504,8 +3411,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                       _buildCTATrustBadge(Icons.support_agent, '24/7 Support'),
                       _buildCTATrustBadge(Icons.lock, 'Secure Checkout'),
                     ],
-                  ).animate().fadeIn(delay: 1000.ms),
-                  
+                  ),
                   const SizedBox(height: 30),
                   
                   // Urgency message
@@ -3538,9 +3444,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                         ),
                       ],
                     ),
-                  ).animate(onPlay: (controller) => controller.repeat())
-                    .shimmer(duration: 2000.ms, color: Colors.white.withOpacity(0.3)),
-                ],
+                  ), ],
               ),
             ),
           ],
@@ -3670,8 +3574,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                     letterSpacing: 2,
                   ),
                 ),
-              ).animate().fadeIn().scale(),
-              
+              ),
               const SizedBox(height: 30),
               
               const Text(
@@ -3683,8 +3586,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   height: 1.2,
                   letterSpacing: -1.5,
                 ),
-              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.3, end: 0),
-              
+              ),
               const SizedBox(height: 20),
               
               Text(
@@ -3695,8 +3597,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   color: Colors.grey[600],
                   height: 1.6,
                 ),
-              ).animate().fadeIn(delay: 400.ms),
-              
+              ),
               const SizedBox(height: 70),
               
               // Transformations Grid
@@ -3895,8 +3796,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           ),
         ],
       ),
-    ).animate().fadeIn(delay: Duration(milliseconds: delay)).scale(delay: Duration(milliseconds: delay));
-  }
+    );}
 
   // ==================== LIMITED OFFER SECTION ====================
   Widget _buildLimitedOfferSection(BuildContext context) {
@@ -3948,9 +3848,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                 ),
               ],
             ),
-          ).animate(onPlay: (controller) => controller.repeat())
-            .shimmer(duration: 1500.ms, color: Colors.white.withOpacity(0.5)),
-          
+          ),
           const SizedBox(height: 40),
           
           const Text(
@@ -3963,8 +3861,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               height: 1.2,
               letterSpacing: -1,
             ),
-          ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.3, end: 0),
-          
+          ),
           const SizedBox(height: 30),
           
           // Countdown timer (LIVE)
@@ -3979,7 +3876,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildTimerUnit(
-                  _timeRemaining.inHours.toString().padLeft(2, '0'),
+                  _timeRemaining.inHours.toString().padLeft(2, '13'),
                   'HOURS',
                 ),
                 const Padding(
@@ -3987,21 +3884,20 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   child: Text(':', style: TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
                 _buildTimerUnit(
-                  (_timeRemaining.inMinutes % 60).toString().padLeft(2, '0'),
+                  (_timeRemaining.inMinutes % 60).toString().padLeft(2, '3'),
                   'MINUTES',
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(':', style: TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold)),
-                ),
-                _buildTimerUnit(
-                  (_timeRemaining.inSeconds % 60).toString().padLeft(2, '0'),
-                  'SECONDS',
-                ),
+                // const Padding(
+                //   padding: EdgeInsets.symmetric(horizontal: 16),
+                //   child: Text(':', style: TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold)),
+                // ),
+                // _buildTimerUnit(
+                //   (_timeRemaining.inSeconds % 60).toString().padLeft(2, '0'),
+                //   'SECONDS',
+                // ),
               ],
             ),
-          ).animate().fadeIn(delay: 400.ms).scale(),
-          
+          ),
           const SizedBox(height: 40),
           
           // Offer details
@@ -4063,8 +3959,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                 ],
               ),
             ],
-          ).animate().fadeIn(delay: 600.ms),
-          
+          ),
           const SizedBox(height: 50),
           
           // CTA
@@ -4096,8 +3991,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                 Icon(Icons.arrow_forward, size: 24),
               ],
             ),
-          ).animate().fadeIn(delay: 800.ms).scale(delay: 800.ms),
-          
+          ),
           const SizedBox(height: 30),
           
           // Stock indicator
@@ -4111,10 +4005,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   color: Color(0xFF10B981),
                   shape: BoxShape.circle,
                 ),
-              ).animate(onPlay: (controller) => controller.repeat())
-                .fadeOut(duration: 800.ms)
-                .then()
-                .fadeIn(duration: 800.ms),
+              ),
               const SizedBox(width: 12),
               const Text(
                 'Only 47 units left at this price!',
@@ -4267,13 +4158,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
         ),
         elevation: 8,
-      ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-        .fadeIn(delay: 200.ms)
-        .slideX(begin: -1, end: 0, duration: 600.ms, curve: Curves.easeOutBack)
-        .then()
-        .shimmer(duration: 1500.ms, delay: 500.ms)
-        .then()
-        .shake(duration: 600.ms, delay: 3000.ms, hz: 2),
+      )
     );
   }
 
@@ -4302,15 +4187,9 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               Icons.arrow_upward,
               color: Colors.white,
               size: 24,
-            ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-              .moveY(begin: 0, end: -4, duration: 1000.ms),
-          ),
-        ),
-      ).animate()
-        .fadeIn(delay: 200.ms, duration: 400.ms)
-        .scale(delay: 200.ms, duration: 400.ms, begin: const Offset(0, 0), end: const Offset(1, 1))
-        .then()
-        .shimmer(duration: 1500.ms, delay: 1000.ms),
+            )
+      )
+    ))
     );
   }
 
@@ -4362,8 +4241,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               color: const Color(0xFF1F2937),
             ),
             textAlign: TextAlign.center,
-          ).animate().fadeIn(duration: 600.ms).slideY(),
-          
+          ),
           const SizedBox(height: 16),
           
           Text(
@@ -4373,8 +4251,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               color: Colors.grey[600],
             ),
             textAlign: TextAlign.center,
-          ).animate().fadeIn(delay: 200.ms, duration: 600.ms),
-          
+          ), 
           SizedBox(height: isMobile ? 40 : 60),
           
           // Video Grid
@@ -4551,8 +4428,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           ),
         ),
       ),
-    ).animate().fadeIn(delay: Duration(milliseconds: delay)).scale();
-  }
+    );}
 
   // ==================== LIFESTYLE GALLERY SECTION ====================
   Widget _buildLifestyleGallerySection(BuildContext context) {
@@ -4614,8 +4490,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               color: const Color(0xFF1F2937),
             ),
             textAlign: TextAlign.center,
-          ).animate().fadeIn(duration: 600.ms).slideY(),
-          
+          ),
           const SizedBox(height: 16),
           
           Text(
@@ -4625,8 +4500,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               color: Colors.grey[600],
             ),
             textAlign: TextAlign.center,
-          ).animate().fadeIn(delay: 200.ms, duration: 600.ms),
-          
+          ),
           SizedBox(height: isMobile ? 40 : 60),
           
           // Photo Grid
@@ -4737,8 +4611,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           ],
         ),
       ),
-    ).animate().fadeIn(delay: Duration(milliseconds: delay)).scale();
-  }
+    );}
 
   // ==================== MANUFACTURING GALLERY SECTION ====================
   Widget _buildManufacturingGallerySection(BuildContext context) {
@@ -4784,8 +4657,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               color: Colors.white,
             ),
             textAlign: TextAlign.center,
-          ).animate().fadeIn(duration: 600.ms).slideY(),
-          
+          ),
           const SizedBox(height: 16),
           
           Text(
@@ -4795,8 +4667,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               color: Colors.white70,
             ),
             textAlign: TextAlign.center,
-          ).animate().fadeIn(delay: 200.ms, duration: 600.ms),
-          
+          ),
           SizedBox(height: isMobile ? 40 : 60),
           
           // Photo Grid
@@ -4923,12 +4794,11 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
           ],
         ),
       ),
-    ).animate().fadeIn(delay: Duration(milliseconds: delay)).scale();
-  }
+    );}
 
   // ==================== COMPARISON SECTION ====================
   Widget _buildComparisonSection(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 600;
+     final isMobile = MediaQuery.of(context).size.width < 600;
     
     return Container(
       padding: EdgeInsets.symmetric(
@@ -4947,7 +4817,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               color: const Color(0xFF1F2937),
             ),
             textAlign: TextAlign.center,
-          ).animate().fadeIn(duration: 600.ms).slideY(),
+          ),
           
           const SizedBox(height: 16),
           
@@ -4958,8 +4828,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
               color: Colors.grey[600],
             ),
             textAlign: TextAlign.center,
-          ).animate().fadeIn(delay: 200.ms, duration: 600.ms),
-          
+          ),
           SizedBox(height: isMobile ? 40 : 60),
           
           // Comparison Table
@@ -4996,8 +4865,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                 ],
               ),
             ),
-          ).animate().fadeIn(delay: 400.ms).slideY(),
-        ],
+          ) ],
       ),
     );
   }
