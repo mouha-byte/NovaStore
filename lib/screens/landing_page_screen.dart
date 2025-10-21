@@ -90,20 +90,36 @@ class _LandingPageScreenState extends State<LandingPageScreen> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const NovaStoreLogo(size: 40, showText: true),
-                Row(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isMobile = constraints.maxWidth < 768;
+                
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildNavButton('Features', () => _scrollToSection(1)),
-                    const SizedBox(width: 16),
-                    _buildNavButton('Reviews', () => _scrollToSection(4)),
-                    const SizedBox(width: 16),
-                    _buildBuyButton(compact: true),
+                    const NovaStoreLogo(size: 40, showText: true),
+                    if (isMobile)
+                      IconButton(
+                        onPressed: () => _showMobileMenuDialog(),
+                        icon: Icon(
+                          Icons.menu,
+                          size: 28,
+                          color: _showAppBar ? AppColors.textPrimary : Colors.white,
+                        ),
+                      )
+                    else
+                      Row(
+                        children: [
+                          _buildNavButton('Features', () => _scrollToSection(1)),
+                          const SizedBox(width: 16),
+                          _buildNavButton('Reviews', () => _scrollToSection(4)),
+                          const SizedBox(width: 16),
+                          _buildBuyButton(compact: true),
+                        ],
+                      ),
                   ],
-                ),
-              ],
+                );
+              },
             ),
           ),
         ),
@@ -136,6 +152,132 @@ class _LandingPageScreenState extends State<LandingPageScreen> {
         curve: Curves.easeInOut,
       );
     }
+  }
+
+  void _showMobileMenuDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 20,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 24),
+              _buildMobileMenuItem(
+                icon: Icons.star,
+                title: 'Features',
+                onTap: () {
+                  Navigator.pop(context);
+                  _scrollToSection(1);
+                },
+              ),
+              _buildMobileMenuItem(
+                icon: Icons.rate_review,
+                title: 'Reviews',
+                onTap: () {
+                  Navigator.pop(context);
+                  _scrollToSection(4);
+                },
+              ),
+              _buildMobileMenuItem(
+                icon: Icons.info_outline,
+                title: 'About',
+                onTap: () {
+                  Navigator.pop(context);
+                  _scrollToSection(2);
+                },
+              ),
+              const Divider(height: 32),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _handleBuyNow();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Buy Now',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '\$${widget.product.price.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileMenuItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: AppColors.primary),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+      onTap: onTap,
+    );
   }
 
   // =========================

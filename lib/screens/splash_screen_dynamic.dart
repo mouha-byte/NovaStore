@@ -204,13 +204,12 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           
           // Main Content
           Center(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 40),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(height: size.height * 0.1),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 40),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: size.height * 0.05),
                     
                     // Animated Logo with Enhanced Glow
                     AnimatedBuilder(
@@ -289,54 +288,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                       .fadeIn(delay: 800.ms, duration: 600.ms)
                       .slideY(delay: 800.ms, begin: 0.2, end: 0),
                     
-                    SizedBox(height: isTablet ? 60 : 40),
-                    
-                    // Featured Products Carousel
-                    SizedBox(
-                      height: isTablet ? 100 : (isMobile ? 60 : 80),
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 40),
-                        itemCount: _featuredProducts.length * 100,
-                        itemBuilder: (context, index) {
-                          final productIndex = index % _featuredProducts.length;
-                          final itemSize = isTablet ? 100.0 : (isMobile ? 60.0 : 80.0);
-                          return Container(
-                            width: itemSize,
-                            height: itemSize,
-                            margin: EdgeInsets.only(right: isMobile ? 8 : 12),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
-                              border: Border.all(color: Colors.white, width: isMobile ? 2 : 3),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 8),
-                                ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(isTablet ? 17 : 13),
-                              child: Image.network(
-                                _featuredProducts[productIndex],
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    color: Colors.white.withOpacity(0.2),
-                                    child: Icon(Icons.shopping_bag, color: Colors.white, size: itemSize * 0.4),
-                                  );
-                                },
-                              ),
-                            ),
-                          ).animate()
-                            .fadeIn(delay: (1400 + productIndex * 100).ms, duration: 600.ms)
-                            .scale(delay: (1400 + productIndex * 100).ms);
-                        },
-                      ),
-                    ),
-                    
-                    SizedBox(height: isTablet ? 50 : 30),
+                    SizedBox(height: isTablet ? 30 : 20),
                     
                     // Happy Customers Wall
                     Container(
@@ -432,232 +384,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                     ).animate()
                       .fadeIn(delay: 1400.ms, duration: 600.ms),
                     
-                    SizedBox(height: isTablet ? 40 : 24),
-                    
-                    // Customer Testimonial Carousel with Real Photos
-                    Container(
-                      constraints: BoxConstraints(maxWidth: isTablet ? 600 : 400),
-                      padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 30),
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 500),
-                        transitionBuilder: (child, animation) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: SlideTransition(
-                              position: Tween<Offset>(
-                                begin: const Offset(0, 0.3),
-                                end: Offset.zero,
-                              ).animate(animation),
-                              child: child,
-                            ),
-                          );
-                        },
-                        child: Container(
-                          key: ValueKey<int>(_currentTestimonial),
-                          padding: EdgeInsets.all(isMobile ? 16 : 20),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.white.withOpacity(0.4), width: 2),
-                          ),
-                          child: Row(
-                            children: [
-                              // Real Customer Photo
-                              Container(
-                                width: isTablet ? 50 : (isMobile ? 35 : 40),
-                                height: isTablet ? 50 : (isMobile ? 35 : 40),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.white, width: 2),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Stack(
-                                  children: [
-                                    ClipOval(
-                                      child: Image.network(
-                                        _customerPhotos[_currentTestimonial % _customerPhotos.length]['url']!,
-                                        fit: BoxFit.cover,
-                                        width: isTablet ? 50 : (isMobile ? 35 : 40),
-                                        height: isTablet ? 50 : (isMobile ? 35 : 40),
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Container(
-                                            color: Colors.white.withOpacity(0.3),
-                                            child: Center(
-                                              child: Text(
-                                                _testimonials[_currentTestimonial]['emoji']!,
-                                                style: TextStyle(fontSize: isTablet ? 24 : (isMobile ? 18 : 20)),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    // Verified badge
-                                    Positioned(
-                                      bottom: -2,
-                                      right: -2,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(2),
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFF10B981),
-                                          shape: BoxShape.circle,
-                                          border: Border.all(color: Colors.white, width: 1.5),
-                                        ),
-                                        child: Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                          size: isMobile ? 8 : 10,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(width: isMobile ? 12 : 15),
-                              // Testimonial Text
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      _testimonials[_currentTestimonial]['quote']!,
-                                      style: TextStyle(
-                                        fontSize: isTablet ? 16 : (isMobile ? 11 : 13),
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                        fontStyle: FontStyle.italic,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      _testimonials[_currentTestimonial]['name']!,
-                                      style: TextStyle(
-                                        fontSize: isTablet ? 13 : (isMobile ? 10 : 11),
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white.withOpacity(0.8),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // Star Rating
-                              Row(
-                                children: List.generate(5, (index) => 
-                                  Icon(Icons.star, color: Colors.amber, size: isTablet ? 16 : (isMobile ? 12 : 14))
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ).animate()
-                      .fadeIn(delay: 1600.ms, duration: 600.ms),
-                    
-                    SizedBox(height: isTablet ? 40 : 24),
-                    
-                    // Live Purchases Notification
-                    Container(
-                      constraints: BoxConstraints(maxWidth: isTablet ? 400 : 320),
-                      padding: EdgeInsets.all(isMobile ? 10 : 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFF10B981), width: 2),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF10B981).withOpacity(0.3),
-                            blurRadius: 20,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: isTablet ? 40 : (isMobile ? 30 : 35),
-                            height: isTablet ? 40 : (isMobile ? 30 : 35),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2),
-                            ),
-                            child: ClipOval(
-                              child: Image.network(
-                                _customerPhotos[(_currentStat + 2) % _customerPhotos.length]['url']!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    color: Colors.white.withOpacity(0.3),
-                                    child: const Icon(Icons.person, color: Colors.white, size: 20),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: isMobile ? 10 : 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: isMobile ? 6 : 8,
-                                      height: isMobile ? 6 : 8,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFF10B981),
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ).animate(onPlay: (controller) => controller.repeat())
-                                      .fadeOut(duration: 800.ms)
-                                      .then()
-                                      .fadeIn(duration: 800.ms),
-                                    SizedBox(width: isMobile ? 4 : 6),
-                                    Text(
-                                      'Just purchased!',
-                                      style: TextStyle(
-                                        fontSize: isTablet ? 13 : (isMobile ? 10 : 11),
-                                        fontWeight: FontWeight.w700,
-                                        color: const Color(0xFF10B981),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: isMobile ? 2 : 4),
-                                Text(
-                                  '${_customerPhotos[(_currentStat + 2) % _customerPhotos.length]['name']} from ${['New York', 'London', 'Tokyo', 'Paris', 'Sydney'][_currentStat % 5]}',
-                                  style: TextStyle(
-                                    fontSize: isTablet ? 12 : (isMobile ? 9 : 10),
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
-                          Icon(
-                            Icons.shopping_bag,
-                            color: Colors.white,
-                            size: isTablet ? 24 : (isMobile ? 18 : 20),
-                          ),
-                        ],
-                      ),
-                    ).animate()
-                      .fadeIn(delay: 2200.ms, duration: 600.ms)
-                      .slideX(delay: 2200.ms, begin: -0.3, end: 0),
-                    
-                    SizedBox(height: isTablet ? 40 : 24),
+                    SizedBox(height: isTablet ? 30 : 20),
                     
                     // Dynamic Stats Counter
                     Container(
@@ -723,67 +450,337 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                       .fadeIn(delay: 1200.ms, duration: 600.ms)
                       .scale(delay: 1200.ms, begin: const Offset(0.8, 0.8)),
                     
-                    SizedBox(height: isTablet ? 60 : 40),
+                  //   SizedBox(height: isTablet ? 30 : 20),
                     
-                    // Loading Animation
-                    Column(
-                      children: [
-                        SizedBox(
-                          width: isTablet ? 60 : (isMobile ? 40 : 50),
-                          height: isTablet ? 60 : (isMobile ? 40 : 50),
-                          child: Stack(
-                            children: [
-                              SizedBox(
-                                width: isTablet ? 60 : (isMobile ? 40 : 50),
-                                height: isTablet ? 60 : (isMobile ? 40 : 50),
-                                child: CircularProgressIndicator(
-                                  strokeWidth: isMobile ? 2 : 3,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white.withOpacity(0.3)),
-                                ),
-                              ),
-                              AnimatedBuilder(
-                                animation: _rotateController,
-                                builder: (context, child) {
-                                  return Transform.rotate(
-                                    angle: _rotateController.value * 2 * math.pi,
-                                    child: SizedBox(
-                                      width: isTablet ? 60 : (isMobile ? 40 : 50),
-                                      height: isTablet ? 60 : (isMobile ? 40 : 50),
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: isMobile ? 3 : 4,
-                                        valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-                                        value: 0.7,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          'Preparing your shopping experience...',
-                          style: TextStyle(
-                            fontSize: isTablet ? 16 : (isMobile ? 12 : 14),
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white.withOpacity(0.9),
-                          ),
-                          textAlign: TextAlign.center,
-                        ).animate(onPlay: (controller) => controller.repeat())
-                          .fadeIn(duration: 1000.ms)
-                          .then()
-                          .fadeOut(duration: 1000.ms),
-                      ],
-                    ).animate()
-                      .fadeIn(delay: 1800.ms, duration: 600.ms),
+                  //   // Customer Testimonial Carousel with Real Photos
+                  //   Container(
+                  //     constraints: BoxConstraints(maxWidth: isTablet ? 600 : 400),
+                  //     padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 30),
+                  //     child: AnimatedSwitcher(
+                  //       duration: const Duration(milliseconds: 500),
+                  //       transitionBuilder: (child, animation) {
+                  //         return FadeTransition(
+                  //           opacity: animation,
+                  //           child: SlideTransition(
+                  //             position: Tween<Offset>(
+                  //               begin: const Offset(0, 0.3),
+                  //               end: Offset.zero,
+                  //             ).animate(animation),
+                  //             child: child,
+                  //           ),
+                  //         );
+                  //       },
+                  //       child: Container(
+                  //         key: ValueKey<int>(_currentTestimonial),
+                  //         padding: EdgeInsets.all(isMobile ? 16 : 20),
+                  //         decoration: BoxDecoration(
+                  //           color: Colors.white.withOpacity(0.2),
+                  //           borderRadius: BorderRadius.circular(20),
+                  //           border: Border.all(color: Colors.white.withOpacity(0.4), width: 2),
+                  //         ),
+                  //         child: Row(
+                  //           children: [
+                  //             // Real Customer Photo
+                  //             Container(
+                  //               width: isTablet ? 50 : (isMobile ? 35 : 40),
+                  //               height: isTablet ? 50 : (isMobile ? 35 : 40),
+                  //               decoration: BoxDecoration(
+                  //                 shape: BoxShape.circle,
+                  //                 border: Border.all(color: Colors.white, width: 2),
+                  //                 boxShadow: [
+                  //                   BoxShadow(
+                  //                     color: Colors.black.withOpacity(0.2),
+                  //                     blurRadius: 8,
+                  //                     offset: const Offset(0, 3),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //               child: Stack(
+                  //                 children: [
+                  //                   ClipOval(
+                  //                     child: Image.network(
+                  //                       _customerPhotos[_currentTestimonial % _customerPhotos.length]['url']!,
+                  //                       fit: BoxFit.cover,
+                  //                       width: isTablet ? 50 : (isMobile ? 35 : 40),
+                  //                       height: isTablet ? 50 : (isMobile ? 35 : 40),
+                  //                       errorBuilder: (context, error, stackTrace) {
+                  //                         return Container(
+                  //                           color: Colors.white.withOpacity(0.3),
+                  //                           child: Center(
+                  //                             child: Text(
+                  //                               _testimonials[_currentTestimonial]['emoji']!,
+                  //                               style: TextStyle(fontSize: isTablet ? 24 : (isMobile ? 18 : 20)),
+                  //                             ),
+                  //                           ),
+                  //                         );
+                  //                       },
+                  //                     ),
+                  //                   ),
+                  //                   // Verified badge
+                  //                   Positioned(
+                  //                     bottom: -2,
+                  //                     right: -2,
+                  //                     child: Container(
+                  //                       padding: const EdgeInsets.all(2),
+                  //                       decoration: BoxDecoration(
+                  //                         color: const Color(0xFF10B981),
+                  //                         shape: BoxShape.circle,
+                  //                         border: Border.all(color: Colors.white, width: 1.5),
+                  //                       ),
+                  //                       child: Icon(
+                  //                         Icons.check,
+                  //                         color: Colors.white,
+                  //                         size: isMobile ? 8 : 10,
+                  //                       ),
+                  //                     ),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //             SizedBox(width: isMobile ? 12 : 15),
+                  //             // Testimonial Text
+                  //             Expanded(
+                  //               child: Column(
+                  //                 crossAxisAlignment: CrossAxisAlignment.start,
+                  //                 mainAxisAlignment: MainAxisAlignment.center,
+                  //                 children: [
+                  //                   Text(
+                  //                     _testimonials[_currentTestimonial]['quote']!,
+                  //                     style: TextStyle(
+                  //                       fontSize: isTablet ? 16 : (isMobile ? 11 : 13),
+                  //                       fontWeight: FontWeight.w600,
+                  //                       color: Colors.white,
+                  //                       fontStyle: FontStyle.italic,
+                  //                     ),
+                  //                     maxLines: 2,
+                  //                     overflow: TextOverflow.ellipsis,
+                  //                   ),
+                  //                   const SizedBox(height: 4),
+                  //                   Text(
+                  //                     _testimonials[_currentTestimonial]['name']!,
+                  //                     style: TextStyle(
+                  //                       fontSize: isTablet ? 13 : (isMobile ? 10 : 11),
+                  //                       fontWeight: FontWeight.w500,
+                  //                       color: Colors.white.withOpacity(0.8),
+                  //                     ),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //             // Star Rating
+                  //             Row(
+                  //               children: List.generate(5, (index) => 
+                  //                 Icon(Icons.star, color: Colors.amber, size: isTablet ? 16 : (isMobile ? 12 : 14))
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ).animate()
+                  //     .fadeIn(delay: 1600.ms, duration: 600.ms),
                     
-                    SizedBox(height: size.height * 0.05),
+                  //   SizedBox(height: isTablet ? 30 : 20),
+                    
+                  //   // Live Purchases Notification
+                  //   Container(
+                  //     constraints: BoxConstraints(maxWidth: isTablet ? 400 : 320),
+                  //     padding: EdgeInsets.all(isMobile ? 10 : 12),
+                  //     decoration: BoxDecoration(
+                  //       color: Colors.white.withOpacity(0.15),
+                  //       borderRadius: BorderRadius.circular(16),
+                  //       border: Border.all(color: const Color(0xFF10B981), width: 2),
+                  //       boxShadow: [
+                  //         BoxShadow(
+                  //           color: const Color(0xFF10B981).withOpacity(0.3),
+                  //           blurRadius: 20,
+                  //           spreadRadius: 2,
+                  //         ),
+                  //       ],
+                  //     ),
+                  //     child: Row(
+                  //       children: [
+                  //         Container(
+                  //           width: isTablet ? 40 : (isMobile ? 30 : 35),
+                  //           height: isTablet ? 40 : (isMobile ? 30 : 35),
+                  //           decoration: BoxDecoration(
+                  //             shape: BoxShape.circle,
+                  //             border: Border.all(color: Colors.white, width: 2),
+                  //           ),
+                  //           child: ClipOval(
+                  //             child: Image.network(
+                  //               _customerPhotos[(_currentStat + 2) % _customerPhotos.length]['url']!,
+                  //               fit: BoxFit.cover,
+                  //               errorBuilder: (context, error, stackTrace) {
+                  //                 return Container(
+                  //                   color: Colors.white.withOpacity(0.3),
+                  //                   child: const Icon(Icons.person, color: Colors.white, size: 20),
+                  //                 );
+                  //               },
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         SizedBox(width: isMobile ? 10 : 12),
+                  //         Expanded(
+                  //           child: Column(
+                  //             crossAxisAlignment: CrossAxisAlignment.start,
+                  //             mainAxisSize: MainAxisSize.min,
+                  //             children: [
+                  //               Row(
+                  //                 children: [
+                  //                   Container(
+                  //                     width: isMobile ? 6 : 8,
+                  //                     height: isMobile ? 6 : 8,
+                  //                     decoration: const BoxDecoration(
+                  //                       color: Color(0xFF10B981),
+                  //                       shape: BoxShape.circle,
+                  //                     ),
+                  //                   ).animate(onPlay: (controller) => controller.repeat())
+                  //                     .fadeOut(duration: 800.ms)
+                  //                     .then()
+                  //                     .fadeIn(duration: 800.ms),
+                  //                   SizedBox(width: isMobile ? 4 : 6),
+                  //                   Text(
+                  //                     'Just purchased!',
+                  //                     style: TextStyle(
+                  //                       fontSize: isTablet ? 13 : (isMobile ? 10 : 11),
+                  //                       fontWeight: FontWeight.w700,
+                  //                       color: const Color(0xFF10B981),
+                  //                     ),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //               SizedBox(height: isMobile ? 2 : 4),
+                  //               Text(
+                  //                 '${_customerPhotos[(_currentStat + 2) % _customerPhotos.length]['name']} from ${['New York', 'London', 'Tokyo', 'Paris', 'Sydney'][_currentStat % 5]}',
+                  //                 style: TextStyle(
+                  //                   fontSize: isTablet ? 12 : (isMobile ? 9 : 10),
+                  //                   fontWeight: FontWeight.w600,
+                  //                   color: Colors.white,
+                  //                 ),
+                  //                 maxLines: 1,
+                  //                 overflow: TextOverflow.ellipsis,
+                  //               ),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //         Icon(
+                  //           Icons.shopping_bag,
+                  //           color: Colors.white,
+                  //           size: isTablet ? 24 : (isMobile ? 18 : 20),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ).animate()
+                  //     .fadeIn(delay: 2200.ms, duration: 600.ms)
+                  //     .slideX(delay: 2200.ms, begin: -0.3, end: 0),
+                    
+                  //   SizedBox(height: isTablet ? 40 : 30),
+                    
+                  //   // Loading Animation
+                  //   Column(
+                  //     children: [
+                  //       SizedBox(
+                  //         width: isTablet ? 60 : (isMobile ? 40 : 50),
+                  //         height: isTablet ? 60 : (isMobile ? 40 : 50),
+                  //         child: Stack(
+                  //           children: [
+                  //             SizedBox(
+                  //               width: isTablet ? 60 : (isMobile ? 40 : 50),
+                  //               height: isTablet ? 60 : (isMobile ? 40 : 50),
+                  //               child: CircularProgressIndicator(
+                  //                 strokeWidth: isMobile ? 2 : 3,
+                  //                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white.withOpacity(0.3)),
+                  //               ),
+                  //             ),
+                  //             AnimatedBuilder(
+                  //               animation: _rotateController,
+                  //               builder: (context, child) {
+                  //                 return Transform.rotate(
+                  //                   angle: _rotateController.value * 2 * math.pi,
+                  //                   child: SizedBox(
+                  //                     width: isTablet ? 60 : (isMobile ? 40 : 50),
+                  //                     height: isTablet ? 60 : (isMobile ? 40 : 50),
+                  //                     child: CircularProgressIndicator(
+                  //                       strokeWidth: isMobile ? 3 : 4,
+                  //                       valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                  //                       value: 0.7,
+                  //                     ),
+                  //                   ),
+                  //                 );
+                  //               },
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //       const SizedBox(height: 20),
+                  //       Text(
+                  //         'Preparing your shopping experience...',
+                  //         style: TextStyle(
+                  //           fontSize: isTablet ? 16 : (isMobile ? 12 : 14),
+                  //           fontWeight: FontWeight.w500,
+                  //           color: Colors.white.withOpacity(0.9),
+                  //         ),
+                  //         textAlign: TextAlign.center,
+                  //       ).animate(onPlay: (controller) => controller.repeat())
+                  //         .fadeIn(duration: 1000.ms)
+                  //         .then()
+                  //         .fadeOut(duration: 1000.ms),
+                  //     ],
+                  //   ).animate()
+                  //     .fadeIn(delay: 1800.ms, duration: 600.ms),
+                    
+                  //   SizedBox(height: isTablet ? 30 : 20),
+                    
+                  //   // Featured Products Carousel
+                  //   SizedBox(
+                  //     height: isTablet ? 100 : (isMobile ? 60 : 80),
+                  //     child: ListView.builder(
+                  //       scrollDirection: Axis.horizontal,
+                  //       padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 40),
+                  //       itemCount: _featuredProducts.length * 100,
+                  //       itemBuilder: (context, index) {
+                  //         final productIndex = index % _featuredProducts.length;
+                  //         final itemSize = isTablet ? 100.0 : (isMobile ? 60.0 : 80.0);
+                  //         return Container(
+                  //           width: itemSize,
+                  //           height: itemSize,
+                  //           margin: EdgeInsets.only(right: isMobile ? 8 : 12),
+                  //           decoration: BoxDecoration(
+                  //             borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
+                  //             border: Border.all(color: Colors.white, width: isMobile ? 2 : 3),
+                  //             boxShadow: [
+                  //               BoxShadow(
+                  //                 color: Colors.black.withOpacity(0.2),
+                  //                 blurRadius: 20,
+                  //                 offset: const Offset(0, 8),
+                  //               ),
+                  //             ],
+                  //           ),
+                  //           child: ClipRRect(
+                  //             borderRadius: BorderRadius.circular(isTablet ? 17 : 13),
+                  //             child: Image.network(
+                  //               _featuredProducts[productIndex],
+                  //               fit: BoxFit.cover,
+                  //               errorBuilder: (context, error, stackTrace) {
+                  //                 return Container(
+                  //                   color: Colors.white.withOpacity(0.2),
+                  //                   child: Icon(Icons.shopping_bag, color: Colors.white, size: itemSize * 0.4),
+                  //                 );
+                  //               },
+                  //             ),
+                  //           ),
+                  //         ).animate()
+                  //           .fadeIn(delay: (1400 + productIndex * 100).ms, duration: 600.ms)
+                  //           .scale(delay: (1400 + productIndex * 100).ms);
+                  //       },
+                  //     ),
+                  //   ),
+                  // 
                   ],
                 ),
               ),
             ),
-          ),
           
           // Enhanced Trust Badges
           Positioned(
