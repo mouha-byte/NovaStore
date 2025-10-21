@@ -92,7 +92,7 @@ class _StatisticsTab extends StatelessWidget {
                     final pendingOrders = orders.where((o) => o.status == 'pending').length;
                     final deliveredOrders = orders.where((o) => o.status == 'delivered').length;
                     final totalDeposits = deposits.fold(0.0, (sum, d) => sum + d.amount);
-                    final approvedDeposits = deposits.where((d) => d.status == 'approved').length;
+                    final approvedDeposits = deposits.where((d) =>  d.status == 'approved').length;
 
                     return ListView(
                       padding: const EdgeInsets.all(16),
