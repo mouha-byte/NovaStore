@@ -58,7 +58,7 @@ class _AIChatbotWidgetState extends State<AIChatbotWidget> with SingleTickerProv
     FAQItem(
       keywords: ['customer service', 'support', 'help', 'contact', 'phone'],
       question: 'How can I contact support?',
-      answer: '👋 We\'re here to help 24/7!\n\n📧 Email: support@novastore.com\n📱 Phone: 1-800-NOVA-STORE\n💬 Live Chat: Right here!\n🕐 Response time: Under 1 hour\n\nOur team is ready to assist you!',
+      answer: '👋 We\'re here to help 24/7!\n\n📧 Email: support@novaaimarket.com\n📱 Phone: 1-800-NOVA-MARKET\n💬 Live Chat: Right here!\n🕐 Response time: Under 1 hour\n\nOur team is ready to assist you!',
     ),
     FAQItem(
       keywords: ['quality', 'material', 'made of', 'durable'],

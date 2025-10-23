@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 // Constantes de l'application
 class AppConstants {
   // Nom de l'application
-  static const String appName = 'Store App 2025';
+  static const String appName = 'Nova Ai Market';
   
   // URL de base Payeer (à remplacer par votre vraie URL)
   static const String payeerBaseUrl = 'https://payeer.com/merchant/';

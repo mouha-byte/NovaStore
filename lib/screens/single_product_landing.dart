@@ -151,8 +151,11 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
     // Navigate to cart with the product added
     Navigator.pushNamed(
       context,
-      '/cart',
-      arguments: widget.product,
+      '/checkout',
+      arguments: {
+        'product': widget.product,
+        'variant': null,
+      },
     );
   }
 
@@ -180,6 +183,12 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                   product: widget.product,
                   onBuyNow: _handleBuyNow,
                 ),
+                const SizedBox(height: 40),
+                LimitedOfferSection(
+                  timeRemaining: _timeRemaining,
+                  onBuyNow: _handleBuyNow,
+                ),
+                
                 
                 // Problem & Solution Sections
                 const ProblemSolutionSections(),
@@ -230,10 +239,6 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                 const BeforeAfterSection(),
                 
                 // Limited Offer Section
-                LimitedOfferSection(
-                  timeRemaining: _timeRemaining,
-                  onBuyNow: _handleBuyNow,
-                ),
                 
                 // Pricing Section
                 Container(

@@ -1,7 +1,174 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:store_app2025/widgets/nova_store_logo.dart';
 
-class FooterSection extends StatelessWidget {
+class FooterSection extends StatefulWidget {
   const FooterSection({super.key});
+
+  @override
+  State<FooterSection> createState() => _FooterSectionState();
+}
+
+class _FooterSectionState extends State<FooterSection> {
+  final TextEditingController _emailController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  // Launch URL helper
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not open $url')),
+        );
+      }
+    }
+  }
+
+  // Handle newsletter subscription
+  void _subscribeNewsletter() {
+    final email = _emailController.text.trim();
+    if (email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter your email address'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    if (!email.contains('@') || !email.contains('.')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid email address'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    // Simulate subscription (you can connect to Firebase or backend here)
+    _emailController.clear();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('✓ Successfully subscribed! Check your email.'),
+        backgroundColor: Colors.green,
+        action: SnackBarAction(
+          label: 'OK',
+          textColor: Colors.white,
+          onPressed: () {},
+        ),
+      ),
+    );
+  }
+
+  // Handle footer link clicks
+  void _handleLinkClick(String category, String link) {
+    switch (link.toLowerCase()) {
+      // Shop links
+      case 'products':
+        Navigator.pushNamed(context, '/home');
+        break;
+      case 'pricing':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Opening Pricing...')),
+        );
+        break;
+      case 'deals':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Opening Special Deals...')),
+        );
+        break;
+      case 'gift cards':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Opening Gift Cards...')),
+        );
+        break;
+
+      // Support links
+      case 'faq':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Opening FAQ...')),
+        );
+        break;
+      case 'contact':
+        _launchURL('mailto:support@novaaimarket.com?subject=Support Request');
+        break;
+      case 'shipping':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Opening Shipping Info...')),
+        );
+        break;
+      case 'returns':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Opening Returns Policy...')),
+        );
+        break;
+
+      // Company links
+      case 'about':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Opening About Us...')),
+        );
+        break;
+      case 'blog':
+        _launchURL('https://blog.novaaimarket.com');
+        break;
+      case 'careers':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Opening Careers...')),
+        );
+        break;
+      case 'press':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Opening Press Kit...')),
+        );
+        break;
+
+      // Legal links
+      case 'privacy':
+        Navigator.pushNamed(context, '/privacy');
+        break;
+      case 'terms':
+        Navigator.pushNamed(context, '/terms');
+        break;
+      case 'cookies':
+        Navigator.pushNamed(context, '/cookies');
+        break;
+      case 'security':
+        Navigator.pushNamed(context, '/security');
+        break;
+
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Opening $link...')),
+        );
+    }
+  }
+
+  // Handle social media clicks
+  void _handleSocialClick(String platform) {
+    switch (platform) {
+      case 'facebook':
+        _launchURL('https://facebook.com/novaaimarket');
+        break;
+      case 'instagram':
+        _launchURL('https://instagram.com/novaaimarket');
+        break;
+      case 'twitter':
+        _launchURL('https://twitter.com/novaaimarket');
+        break;
+      case 'youtube':
+        _launchURL('https://youtube.com/@novaaimarket');
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,11 +269,14 @@ class FooterSection extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.star, color: Colors.white, size: 24),
-            ),
+child: NovaStoreLogo(
+                              size: 60,
+                              showText: false,
+                              color: Colors.white,
+                            ),            ),
             const SizedBox(width: 12),
             const Text(
-              'NovaStore',
+              'Nova Ai Market',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w900,
@@ -144,6 +314,7 @@ class FooterSection extends StatelessWidget {
             children: [
               Expanded(
                 child: TextField(
+                  controller: _emailController,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     hintText: 'Enter your email',
@@ -151,10 +322,11 @@ class FooterSection extends StatelessWidget {
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                   ),
+                  onSubmitted: (_) => _subscribeNewsletter(),
                 ),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: _subscribeNewsletter,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF8B5CF6),
                   foregroundColor: Colors.white,
@@ -191,14 +363,22 @@ class FooterSection extends StatelessWidget {
         const SizedBox(height: 20),
         ...links.map((link) => Padding(
           padding: const EdgeInsets.only(bottom: 12),
-          child: InkWell(
-            onTap: () {},
-            child: Text(
-              link,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[400],
-                fontWeight: FontWeight.w500,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: InkWell(
+              onTap: () => _handleLinkClick(title, link),
+              hoverColor: Colors.white.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(4),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Text(
+                  link,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[400],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ),
           ),
@@ -209,7 +389,7 @@ class FooterSection extends StatelessWidget {
 
   Widget _buildCopyright() {
     return Text(
-      '© ${DateTime.now().year} NovaStore. All rights reserved.',
+      '© ${DateTime.now().year} Nova Ai Market. All rights reserved.',
       style: TextStyle(
         fontSize: 14,
         color: Colors.grey[500],
@@ -221,32 +401,43 @@ class FooterSection extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildSocialIcon(Icons.facebook),
+        _buildSocialIcon(Icons.facebook_rounded, 'facebook', const Color(0xFF1877F2)),
         const SizedBox(width: 12),
-        _buildSocialIcon(Icons.camera_alt), // Instagram
+        _buildSocialIcon(Icons.camera_alt_rounded, 'instagram', const Color(0xFFE4405F)), // Instagram
         const SizedBox(width: 12),
-        _buildSocialIcon(Icons.close), // Twitter/X
+        _buildSocialIcon(Icons.close_rounded, 'twitter', const Color(0xFF1DA1F2)), // Twitter/X
         const SizedBox(width: 12),
-        _buildSocialIcon(Icons.play_arrow), // YouTube
+        _buildSocialIcon(Icons.play_circle_fill_rounded, 'youtube', const Color(0xFFFF0000)), // YouTube
       ],
     );
   }
 
-  Widget _buildSocialIcon(IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+  Widget _buildSocialIcon(IconData icon, String platform, Color brandColor) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: InkWell(
+        onTap: () => _handleSocialClick(platform),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.1),
-          width: 1,
+        onHover: (isHovering) {
+          // Visual feedback on hover
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.1),
+              width: 1,
+            ),
+          ),
+          child: Icon(
+            icon,
+            color: Colors.grey[400],
+            size: 20,
+          ),
         ),
-      ),
-      child: Icon(
-        icon,
-        color: Colors.grey[400],
-        size: 20,
       ),
     );
   }

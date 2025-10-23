@@ -7,7 +7,7 @@ import 'services/auth_service.dart';
 import 'services/firestore_service.dart';
 import 'services/theme_service.dart';
 
-import 'screens/splash_screen_dynamic.dart';
+import 'screens/splash_screen_simple.dart';
 import 'screens/login_screen_modern.dart';
 import 'screens/home_screen_modern.dart';
 import 'screens/landing_page_screen.dart';
@@ -18,6 +18,10 @@ import 'screens/checkout_screen_modern.dart';
 import 'screens/order_confirmation_screen.dart';
 import 'screens/orders_screen_modern.dart';
 import 'screens/admin_dashboard_screen.dart';
+import 'screens/privacy_policy_screen.dart';
+import 'screens/terms_of_service_screen.dart';
+import 'screens/cookie_policy_screen.dart';
+import 'screens/security_screen.dart';
 
 import 'models/product_model.dart';
 import 'utils/app_theme.dart';
@@ -44,7 +48,7 @@ class MyApp extends StatelessWidget {
       child: Consumer<ThemeService>(
         builder: (context, themeService, child) {
           return MaterialApp(
-            title: 'Store App 2025',
+            title: 'Nova Ai Market',
             debugShowCheckedModeBanner: false,
             theme: appTheme,
             darkTheme: appThemeDark,
@@ -103,6 +107,22 @@ class MyApp extends StatelessWidget {
             case '/admin':
               return MaterialPageRoute(
                 builder: (_) => const AdminDashboardScreen(),
+              );
+            case '/privacy':
+              return MaterialPageRoute(
+                builder: (_) => const PrivacyPolicyScreen(),
+              );
+            case '/terms':
+              return MaterialPageRoute(
+                builder: (_) => const TermsOfServiceScreen(),
+              );
+            case '/cookies':
+              return MaterialPageRoute(
+                builder: (_) => const CookiePolicyScreen(),
+              );
+            case '/security':
+              return MaterialPageRoute(
+                builder: (_) => const SecurityScreen(),
               );
             default:
               return MaterialPageRoute(

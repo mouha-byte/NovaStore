@@ -252,7 +252,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                     
                     // Brand Name with Enhanced Styling
                     Text(
-                      'NovaStoreAi',
+                      'Nova Ai Market',
                       style: TextStyle(
                         fontSize: isTablet ? 64 : (isMobile ? 40 : 52),
                         fontWeight: FontWeight.w900,

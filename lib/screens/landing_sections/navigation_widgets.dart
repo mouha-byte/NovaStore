@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:store_app2025/widgets/nova_store_logo.dart';
 
 class NavigationWidgets extends StatelessWidget {
   final bool isScrolled;
@@ -39,7 +40,8 @@ class NavigationWidgets extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.local_fire_department, color: Colors.white, size: 18),
+            const Icon(Icons.local_fire_department,
+                color: Colors.white, size: 18),
             const SizedBox(width: 8),
             Text(
               '50% OFF - Limited Time Only!',
@@ -64,7 +66,7 @@ class NavigationWidgets extends StatelessWidget {
   // ==================== STICKY NAVIGATION ====================
   Widget _buildStickyNav(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 768;
-    
+
     return Container(
       height: 70,
       decoration: BoxDecoration(
@@ -97,11 +99,15 @@ class NavigationWidgets extends StatelessWidget {
                         ),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.star, color: Colors.white, size: 20),
+                      child: NovaStoreLogo(
+                  size: (isMobile ? 50 : 50),
+                  showText: false,
+                  color: Colors.white,
+                ),
                     ),
                     const SizedBox(width: 10),
                     const Text(
-                      'NovaStore',
+                      'Nova Ai Market',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w900,
@@ -110,9 +116,9 @@ class NavigationWidgets extends StatelessWidget {
                     ),
                   ],
                 ),
-                
+
                 const Spacer(),
-                
+
                 // Mobile: Hamburger Menu
                 if (isMobile) ...[
                   IconButton(
@@ -141,7 +147,8 @@ class NavigationWidgets extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFEF4444),
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 28, vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -206,7 +213,7 @@ class NavigationWidgets extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              
+
               // Menu Items
               _buildMobileMenuItem(
                 context,
@@ -253,12 +260,13 @@ class NavigationWidgets extends StatelessWidget {
                   onFaqClick();
                 },
               ),
-              
+
               const Divider(height: 32),
-              
+
               // Buy Now Button
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -371,11 +379,11 @@ class FloatingActionButtons extends StatelessWidget {
             child: const Icon(Icons.chat_bubble, color: Colors.white),
           ),
         ),
-        
+
         // Buy Now Button (Mobile) - Sticky at bottom
         if (MediaQuery.of(context).size.width < 600)
           Positioned(
-            left: 80,  // Reduced left margin
+            left: 80, // Reduced left margin
             right: 80, // Reduced right margin
             bottom: 20, // Positioned above the chat button
             child: ElevatedButton(

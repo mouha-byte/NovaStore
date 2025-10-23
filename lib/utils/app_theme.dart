@@ -538,9 +538,9 @@ class AppConstants {
   static const String placeholderImage = 'https://via.placeholder.com/400x300';
   
   // Textes
-  static const String appName = 'NovaStoreAi';
+  static const String appName = 'Nova Ai Market';
   static const String tagline = 'AI-Powered Shopping Experience';
-  static const String copyright = '© 2025 NovaStoreAi. All rights reserved.';
+  static const String copyright = '© 2025 Nova Ai Market. All rights reserved.';
   
   // Features bullets
   static const List<Map<String, dynamic>> features = [

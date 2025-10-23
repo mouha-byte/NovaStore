@@ -50,7 +50,7 @@ class ProblemSolutionSections extends StatelessWidget {
                     Icon(Icons.warning_amber, color: Color(0xFFEF4444), size: 20),
                     SizedBox(width: 10),
                     Text(
-                      'THE PROBLEM',
+                      'THE PROBLEM THAT WE SOLVE FOR OUR CUSTOMERS',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w900,

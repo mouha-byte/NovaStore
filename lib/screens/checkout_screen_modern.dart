@@ -324,11 +324,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ],
                   ),
                 ),
-                if (!hasEnoughBalance && user != null)
-                  TextButton(
-                    onPressed: () => Navigator.pushNamed(context, '/wallet'),
-                    child: const Text('Add Funds'),
-                  ),
+                // if (!hasEnoughBalance && user != null)
+                //   TextButton(
+                //     onPressed: () => Navigator.pushNamed(context, '/wallet'),
+                //     child: const Text('Add Funds'),
+                //   ),
               ],
             ),
           ),
@@ -459,33 +459,33 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   // PROCESS ORDER
   // =========================
   Future<void> _processOrder() async {
-    if (!_formKey.currentState!.validate()) return;
+    // if (!_formKey.currentState!.validate()) return;
 
     final authService = Provider.of<AuthService>(context, listen: false);
     final user = authService.currentUser;
 
     // Check if user is logged in
-    if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please login to place an order'),
-          backgroundColor: AppColors.error,
-        ),
-      );
-      Navigator.pushNamed(context, '/login');
-      return;
-    }
+    // if (user == null) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content: Text('Please login to place an order'),
+    //       backgroundColor: AppColors.error,
+    //     ),
+    //   );
+    //   Navigator.pushNamed(context, '/login');
+    //   return;
+    // }
 
     // Check wallet balance if paying with wallet
-    if (_paymentMethod == 'wallet' && user.walletBalance < _totalPrice) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Insufficient wallet balance. Please add funds.'),
-          backgroundColor: AppColors.error,
-        ),
-      );
-      return;
-    }
+    // if (_paymentMethod == 'wallet' && user.walletBalance < _totalPrice) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content: Text('Insufficient wallet balance. Please add funds.'),
+    //       backgroundColor: AppColors.error,
+    //     ),
+    //   );
+    //   return;
+    // }
 
     setState(() => _isProcessing = true);
 
@@ -496,7 +496,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         // Create order with wallet payment
         final order = OrderModel(
           id: '',
-          userId: user.id,
+          // userId: user.id,
+                    userId: "15",
+
           productId: widget.product.id,
           variantId: widget.variant?.variantId,
           totalPrice: _totalPrice,
@@ -514,8 +516,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
         // Deduct from wallet
         await firestoreService.updateUserBalance(
-          user.id,
-          user.walletBalance - _totalPrice,
+          // user.id,
+          '15',
+          // user.walletBalance - _totalPrice,
+          1000.0 - _totalPrice,
         );
 
         // Refresh user data

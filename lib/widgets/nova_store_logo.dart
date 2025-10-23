@@ -82,7 +82,7 @@ class NovaStoreLogo extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'Store',
+                    'Ai Market',
                     style: TextStyle(
                       fontSize: size * 0.35,
                       fontWeight: FontWeight.w600,

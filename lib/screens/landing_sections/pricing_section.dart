@@ -237,7 +237,7 @@ class PricingSection extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    SizedBox(height: isMobile ? 2 : 8),
+                    SizedBox(height: isMobile ? 2  : 8),
                     Text(
                       subtitle,
                       textAlign: TextAlign.center,
