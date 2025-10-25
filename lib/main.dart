@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
@@ -22,12 +24,21 @@ import 'screens/privacy_policy_screen.dart';
 import 'screens/terms_of_service_screen.dart';
 import 'screens/cookie_policy_screen.dart';
 import 'screens/security_screen.dart';
+import 'screens/payment_success_screen.dart';
+import 'screens/payment_failed_screen.dart';
+import 'screens/payment_status_screen.dart';
 
 import 'models/product_model.dart';
 import 'utils/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Enable path URL strategy for clean URLs (remove # from URLs)
+  if (kIsWeb) {
+    usePathUrlStrategy();
+  }
+  
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -123,6 +134,21 @@ class MyApp extends StatelessWidget {
             case '/security':
               return MaterialPageRoute(
                 builder: (_) => const SecurityScreen(),
+              );
+            case '/success':
+            case '/payment-success':
+              return MaterialPageRoute(
+                builder: (_) => const PaymentSuccessScreen(),
+              );
+            case '/fail':
+            case '/payment-failed':
+              return MaterialPageRoute(
+                builder: (_) => const PaymentFailedScreen(),
+              );
+            case '/status':
+            case '/payment-status':
+              return MaterialPageRoute(
+                builder: (_) => const PaymentStatusScreen(),
               );
             default:
               return MaterialPageRoute(

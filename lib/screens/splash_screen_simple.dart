@@ -70,6 +70,13 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     
     if (!mounted) return;
     
+    // Check if we're still on the splash screen (route is '/')
+    final currentRoute = ModalRoute.of(context)?.settings.name;
+    if (currentRoute != '/' && currentRoute != null) {
+      // User has already navigated away, don't redirect
+      return;
+    }
+    
     final firestoreService = Provider.of<FirestoreService>(context, listen: false);
     
     try {

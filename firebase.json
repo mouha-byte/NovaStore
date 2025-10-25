@@ -1,1 +1,50 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"store-ebecf","appId":"1:95477099575:android:5de6e3cc2adfdc74b823b2","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"store-ebecf","configurations":{"android":"1:95477099575:android:5de6e3cc2adfdc74b823b2","ios":"1:95477099575:ios:cdd1f719b3dc325fb823b2","macos":"1:95477099575:ios:cdd1f719b3dc325fb823b2","web":"1:95477099575:web:deade45e0e51a9e2b823b2","windows":"1:95477099575:web:5612cd5e9b213b0ab823b2"}}}}}}
+{
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|js|css|eot|otf|ttf|ttc|woff|woff2|font.css)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=604800"
+          }
+        ]
+      }
+    ]
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "store-ebecf",
+          "appId": "1:95477099575:android:5de6e3cc2adfdc74b823b2",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "store-ebecf",
+          "configurations": {
+            "android": "1:95477099575:android:5de6e3cc2adfdc74b823b2",
+            "ios": "1:95477099575:ios:cdd1f719b3dc325fb823b2",
+            "macos": "1:95477099575:ios:cdd1f719b3dc325fb823b2",
+            "web": "1:95477099575:web:deade45e0e51a9e2b823b2",
+            "windows": "1:95477099575:web:5612cd5e9b213b0ab823b2"
+          }
+        }
+      }
+    }
+  }
+}
