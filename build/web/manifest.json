@@ -1,6 +1,6 @@
 {
-    "name": "web",
-    "short_name": "web",
+    "name": "store_app2025",
+    "short_name": "store_app2025",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
