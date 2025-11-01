@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
+import '../services/firestore_service.dart';
 
 class PaymentSuccessScreen extends StatefulWidget {
   const PaymentSuccessScreen({super.key});
@@ -35,8 +37,30 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
       (route) => false,
     );
   }
+  void _goToHome() async {
+    final firestoreService = Provider.of<FirestoreService>(context, listen: false);
+    
+    try {
+      final products = await firestoreService.getProducts().first;
+      
+      if (products.isNotEmpty && mounted) {
+        Navigator.pushReplacementNamed(
+          context,
+          '/landing',
+          arguments: products.first,
+        );
+      } else if (mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    }
+  }
 
-  void _goToHome() {
+
+  void _goToHomeOld() {
     Navigator.pushNamedAndRemoveUntil(
       context,
       '/home',
@@ -183,38 +207,38 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
 
                 const SizedBox(height: 48),
 
-                // Action Buttons
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _goToOrders,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF8B5CF6),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.shopping_bag_outlined),
-                        SizedBox(width: 12),
-                        Text(
-                          'View My Orders',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // // Action Buttons
+                // SizedBox(
+                //   width: double.infinity,
+                //   child: ElevatedButton(
+                //     onPressed: _goToOrders,
+                //     style: ElevatedButton.styleFrom(
+                //       backgroundColor: const Color(0xFF8B5CF6),
+                //       foregroundColor: Colors.white,
+                //       padding: const EdgeInsets.symmetric(vertical: 16),
+                //       shape: RoundedRectangleBorder(
+                //         borderRadius: BorderRadius.circular(12),
+                //       ),
+                //       elevation: 0,
+                //     ),
+                //     child: const Row(
+                //       mainAxisAlignment: MainAxisAlignment.center,
+                //       children: [
+                //         Icon(Icons.shopping_bag_outlined),
+                //         SizedBox(width: 12),
+                //         Text(
+                //           'View My Orders',
+                //           style: TextStyle(
+                //             fontSize: 16,
+                //             fontWeight: FontWeight.w700,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
 
-                const SizedBox(height: 16),
+                // const SizedBox(height: 16),
 
                 SizedBox(
                   width: double.infinity,

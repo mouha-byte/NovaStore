@@ -66,17 +66,12 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   }
 
   Future<void> _initializeApp() async {
-    await Future.delayed(const Duration(seconds: 5));
-    
-    if (!mounted) return;
-    
-    // Check if we're still on the splash screen (route is '/')
-    final currentRoute = ModalRoute.of(context)?.settings.name;
-    if (currentRoute != '/' && currentRoute != null) {
-      // User has already navigated away, don't redirect
-      return;
-    }
-    
+    // Ne plus rediriger automatiquement
+    // L'utilisateur doit cliquer sur le bouton
+    return;
+  }
+
+  void _navigateToExperience() async {
     final firestoreService = Provider.of<FirestoreService>(context, listen: false);
     
     try {
@@ -261,37 +256,74 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                   ).animate()
                     .fadeIn(delay: 600.ms, duration: 600.ms),
                   
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 60),
                   
-                  SizedBox(
-                    width: 60,
-                    height: 60,
-                    child: AnimatedBuilder(
-                      animation: _rotateController,
-                      builder: (context, child) {
-                        return Transform.rotate(
-                          angle: _rotateController.value * 2 * math.pi,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 4,
-                            valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-                            backgroundColor: Colors.white.withOpacity(0.3),
+                  // Bouton "Commencer Votre Expérience"
+                  ElevatedButton(
+                    onPressed: _navigateToExperience,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color(0xFF8B5CF6),
+                      padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      elevation: 10,
+                      shadowColor: Colors.white.withOpacity(0.5),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Commencer Votre Expérience',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.5,
                           ),
-                        );
-                      },
+                        ),
+                        const SizedBox(width: 12),
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFF8B5CF6), Color(0xFFEC4899)],
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.arrow_forward_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ],
                     ),
                   ).animate()
-                    .fadeIn(delay: 1000.ms, duration: 600.ms)
-                    .scale(delay: 1000.ms),
+                    .fadeIn(delay: 1200.ms, duration: 600.ms)
+                    .scale(delay: 1200.ms, duration: 600.ms, begin: const Offset(0.8, 0.8))
+                    .shimmer(delay: 2000.ms, duration: 2000.ms, color: Colors.white.withOpacity(0.5)),
                   
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   
-                  Text(
-                    'Loading your experience...',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white.withOpacity(0.8),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.touch_app_rounded,
+                        color: Colors.white.withOpacity(0.6),
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Cliquez pour continuer',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white.withOpacity(0.7),
+                        ),
+                      ),
+                    ],
                   ).animate(onPlay: (controller) => controller.repeat())
                     .fadeIn(duration: 1000.ms)
                     .then()

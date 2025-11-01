@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:store_app2025/services/firestore_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PaymentFailedScreen extends StatefulWidget {
@@ -32,12 +34,26 @@ class _PaymentFailedScreenState extends State<PaymentFailedScreen>
     Navigator.pop(context); // Return to checkout
   }
 
-  void _goToHome() {
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      '/home',
-      (route) => false,
-    );
+ void _goToHome() async {
+    final firestoreService = Provider.of<FirestoreService>(context, listen: false);
+    
+    try {
+      final products = await firestoreService.getProducts().first;
+      
+      if (products.isNotEmpty && mounted) {
+        Navigator.pushReplacementNamed(
+          context,
+          '/landing',
+          arguments: products.first,
+        );
+      } else if (mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    }
   }
 
   void _contactSupport() async {
@@ -169,38 +185,38 @@ class _PaymentFailedScreenState extends State<PaymentFailedScreen>
                   ),
                 ),
 
-                const SizedBox(height: 48),
+                  // const SizedBox(height: 48),
 
-                // Action Buttons
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _tryAgain,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF8B5CF6),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.refresh_rounded),
-                        SizedBox(width: 12),
-                        Text(
-                          'Try Again',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                  // // Action Buttons
+                  // SizedBox(
+                  //   width: double.infinity,
+                  //   child: ElevatedButton(
+                  //     onPressed: _tryAgain,
+                  //     style: ElevatedButton.styleFrom(
+                  //       backgroundColor: const Color(0xFF8B5CF6),
+                  //       foregroundColor: Colors.white,
+                  //       padding: const EdgeInsets.symmetric(vertical: 16),
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(12),
+                  //       ),
+                  //       elevation: 0,
+                  //     ),
+                  //     child: const Row(
+                  //       mainAxisAlignment: MainAxisAlignment.center,
+                  //       children: [
+                  //         Icon(Icons.refresh_rounded),
+                  //         SizedBox(width: 12),
+                  //         Text(
+                  //           'Try Again',
+                  //           style: TextStyle(
+                  //             fontSize: 16,
+                  //             fontWeight: FontWeight.w700,
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
 
                 const SizedBox(height: 16),
 
