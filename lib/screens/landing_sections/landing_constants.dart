@@ -607,7 +607,7 @@ class LandingConstants {
     VideoItem(
       title: 'Témoignages Clients',
       views: '210K vues',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=800&h=500&fit=crop',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&h=500&fit=crop',
       duration: Duration(minutes: 5, seconds: 33),
       videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     ),

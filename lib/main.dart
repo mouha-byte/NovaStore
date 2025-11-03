@@ -12,7 +12,6 @@ import 'services/theme_service.dart';
 
 import 'screens/splash_screen_simple.dart';
 
-
 import 'screens/checkout_screen_modern.dart';
 
 import 'screens/static pages/privacy_policy_screen.dart';
@@ -72,10 +71,19 @@ class MyApp extends StatelessWidget {
                   return MaterialPageRoute(
                     builder: (_) => SingleProductLanding(product: product),
                   );
-               
+
                 case '/privacy':
                   return MaterialPageRoute(
                     builder: (_) => const PrivacyPolicyScreen(),
+                  );
+
+                case '/checkout':
+                  final args = settings.arguments as Map<String, dynamic>;
+                  return MaterialPageRoute(
+                    builder: (_) => CheckoutScreen(
+                      product: args['product'] as ProductModel,
+                      variant: args['variant'] as ProductVariant?,
+                    ),
                   );
                 case '/terms':
                   return MaterialPageRoute(
