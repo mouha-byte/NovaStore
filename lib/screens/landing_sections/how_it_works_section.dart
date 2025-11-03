@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'landing_constants.dart';
 
 class HowItWorksSection extends StatelessWidget {
   const HowItWorksSection({super.key});
@@ -13,57 +14,21 @@ class HowItWorksSection extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 1200),
           child: Column(
             children: [
-              // Badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF3B82F6), Color(0xFF06B6D4)],
-                  ),
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF3B82F6).withOpacity(0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.auto_awesome, color: Colors.white, size: 20),
-                    SizedBox(width: 10),
-                    Text(
-                      'HOW IT WORKS',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              
+              _buildBadge(),
               const SizedBox(height: 40),
-              
-              const Text(
-                'Simple Steps, Powerful Results',
+              Text(
+                LandingConstants.howItWorksTitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 46,
                   fontWeight: FontWeight.w900,
                   height: 1.2,
                   letterSpacing: -1,
                 ),
               ),
-              
               const SizedBox(height: 30),
-              
               Text(
-                'Getting started is easy. Follow these simple steps.',
+                LandingConstants.howItWorksDescription,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
@@ -72,10 +37,7 @@ class HowItWorksSection extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              
               const SizedBox(height: 80),
-              
-              // Steps
               _buildStepsLayout(),
             ],
           ),
@@ -84,29 +46,66 @@ class HowItWorksSection extends StatelessWidget {
     );
   }
 
+  Widget _buildBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [LandingConstants.blue, Color(0xFF06B6D4)],
+        ),
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: LandingConstants.blue.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+          SizedBox(width: 10),
+          Text(
+            LandingConstants.howItWorksBadge,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              letterSpacing: 2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildStepsLayout() {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isWide = constraints.maxWidth > 900;
-        
+
         if (isWide) {
           return Row(
             children: [
-              Expanded(child: _buildStepCard(1, 'Order', 'Click the button and complete your secure checkout', Icons.shopping_cart, const Color(0xFF3B82F6))),
-              _buildArrow(),
-              Expanded(child: _buildStepCard(2, 'Receive', 'Get your product delivered to your door in 2-3 days', Icons.local_shipping, const Color(0xFF10B981))),
-              _buildArrow(),
-              Expanded(child: _buildStepCard(3, 'Enjoy', 'Start experiencing the amazing results immediately', Icons.celebration, const Color(0xFFF59E0B))),
+              for (int i = 0; i < LandingConstants.howItWorksSteps.length; i++) ...[
+                Expanded(
+                  child: _buildStepCard(LandingConstants.howItWorksSteps[i]),
+                ),
+                if (i < LandingConstants.howItWorksSteps.length - 1)
+                  _buildArrow(),
+              ],
             ],
           );
         } else {
           return Column(
             children: [
-              _buildStepCard(1, 'Order', 'Click the button and complete your secure checkout', Icons.shopping_cart, const Color(0xFF3B82F6)),
-              _buildVerticalArrow(),
-              _buildStepCard(2, 'Receive', 'Get your product delivered to your door in 2-3 days', Icons.local_shipping, const Color(0xFF10B981)),
-              _buildVerticalArrow(),
-              _buildStepCard(3, 'Enjoy', 'Start experiencing the amazing results immediately', Icons.celebration, const Color(0xFFF59E0B)),
+              for (int i = 0; i < LandingConstants.howItWorksSteps.length; i++) ...[
+                _buildStepCard(LandingConstants.howItWorksSteps[i]),
+                if (i < LandingConstants.howItWorksSteps.length - 1)
+                  _buildVerticalArrow(),
+              ],
             ],
           );
         }
@@ -114,16 +113,16 @@ class HowItWorksSection extends StatelessWidget {
     );
   }
 
-  Widget _buildStepCard(int number, String title, String description, IconData icon, Color color) {
+  Widget _buildStepCard(HowItWorksStep step) {
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: color.withOpacity(0.3), width: 2),
+        border: Border.all(color: step.color.withOpacity(0.3), width: 2),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.15),
+            color: step.color.withOpacity(0.15),
             blurRadius: 30,
             offset: const Offset(0, 10),
           ),
@@ -131,18 +130,17 @@ class HowItWorksSection extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Number badge
           Container(
             width: 60,
             height: 60,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [color, color.withOpacity(0.7)],
+                colors: [step.color, step.color.withOpacity(0.7)],
               ),
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(0.4),
+                  color: step.color.withOpacity(0.4),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
@@ -150,7 +148,7 @@ class HowItWorksSection extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                '$number',
+                '${step.number}',
                 style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w900,
@@ -159,34 +157,27 @@ class HowItWorksSection extends StatelessWidget {
               ),
             ),
           ),
-          
           const SizedBox(height: 24),
-          
-          // Icon
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: step.color.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 40, color: color),
+            child: Icon(step.icon, size: 40, color: step.color),
           ),
-          
           const SizedBox(height: 20),
-          
           Text(
-            title,
+            step.title,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w900,
             ),
           ),
-          
           const SizedBox(height: 12),
-          
           Text(
-            description,
+            step.description,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
@@ -202,22 +193,15 @@ class HowItWorksSection extends StatelessWidget {
   Widget _buildArrow() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Icon(
-        Icons.arrow_forward,
-        size: 32,
-        color: Colors.grey[400],
-      ),
+      child: Icon(Icons.arrow_forward, size: 32, color: Colors.grey[400]),
     );
   }
 
   Widget _buildVerticalArrow() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 24),
-      child: Icon(
-        Icons.arrow_downward,
-        size: 32,
-        color: Colors.grey[400],
-      ),
+      child: Icon(Icons.arrow_downward, size: 32, color: Colors.grey[400]),
     );
   }
 }
+

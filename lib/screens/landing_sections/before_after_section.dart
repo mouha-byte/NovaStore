@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'landing_constants.dart';
 
 class BeforeAfterSection extends StatefulWidget {
   const BeforeAfterSection({super.key});
@@ -20,94 +21,97 @@ class _BeforeAfterSectionState extends State<BeforeAfterSection> {
           constraints: const BoxConstraints(maxWidth: 1200),
           child: Column(
             children: [
-              // Badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFEC4899), Color(0xFFF59E0B)],
-                  ),
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFEC4899).withOpacity(0.4),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.compare, color: Colors.white, size: 20),
-                    SizedBox(width: 10),
-                    Text(
-                      'TRANSFORMATION',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              
+              _buildBadge(),
               const SizedBox(height: 40),
-              
-              const Text(
-                'See The Difference',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 46,
-                  fontWeight: FontWeight.w900,
-                  height: 1.2,
-                  letterSpacing: -1,
-                  color: Colors.white,
-                ),
-              ),
-              
+              _buildTitle(),
               const SizedBox(height: 30),
-              
-              Text(
-                'Real results from real customers. Slide to compare.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.grey[400],
-                  height: 1.6,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              
+              _buildSubtitle(),
               const SizedBox(height: 80),
-              
-              // Interactive Before/After Slider
               _buildBeforeAfterSlider(),
-              
               const SizedBox(height: 60),
-              
-              // Results Stats
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final isWide = constraints.maxWidth > 800;
-                  return Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: isWide ? 60 : 30,
-                    runSpacing: 40,
-                    children: [
-                      _buildResultStat('87%', 'Improvement', Icons.trending_up),
-                      _buildResultStat('30 Days', 'Average Time', Icons.schedule),
-                      _buildResultStat('10K+', 'Success Stories', Icons.people),
-                    ],
-                  );
-                },
-              ),
+              _buildResultStats(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [LandingConstants.pinkAccent, LandingConstants.yellowAccent],
+        ),
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: LandingConstants.pinkAccent.withOpacity(0.4),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.compare, color: Colors.white, size: 20),
+          const SizedBox(width: 10),
+          Text(
+            LandingConstants.beforeAfterBadge,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              letterSpacing: 2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return Text(
+      LandingConstants.beforeAfterTitle,
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        fontSize: 46,
+        fontWeight: FontWeight.w900,
+        height: 1.2,
+        letterSpacing: -1,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  Widget _buildSubtitle() {
+    return Text(
+      LandingConstants.beforeAfterSubtitle,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 20,
+        color: Colors.grey[400],
+        height: 1.6,
+        fontWeight: FontWeight.w400,
+      ),
+    );
+  }
+
+  Widget _buildResultStats() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isWide = constraints.maxWidth > 800;
+        return Wrap(
+          alignment: WrapAlignment.center,
+          spacing: isWide ? 60 : 30,
+          runSpacing: 40,
+          children: LandingConstants.resultStats
+              .map((stat) => _buildResultStat(stat))
+              .toList(),
+        );
+      },
     );
   }
 
@@ -118,7 +122,7 @@ class _BeforeAfterSectionState extends State<BeforeAfterSection> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFEC4899).withOpacity(0.3),
+            color: LandingConstants.pinkAccent.withOpacity(0.3),
             blurRadius: 40,
             offset: const Offset(0, 20),
           ),
@@ -128,51 +132,45 @@ class _BeforeAfterSectionState extends State<BeforeAfterSection> {
         borderRadius: BorderRadius.circular(24),
         child: Stack(
           children: [
-            // Before image (full width)
+            // Before image
             Positioned.fill(
               child: Image.network(
-                'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=1200&h=800&fit=crop',
+                LandingConstants.beforeImageUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(color: Colors.grey[800]);
                 },
               ),
             ),
-            
-            // Before label
             const Positioned(
               top: 20,
               left: 20,
-              child: _BeforeAfterLabel('BEFORE', Color(0xFFEF4444)),
+              child: _BeforeAfterLabel('AVANT', Color(0xFFEF4444)),
             ),
-            
-            // After image (clipped by slider)
+            // After image
             Positioned(
               left: 0,
               top: 0,
               bottom: 0,
               width: MediaQuery.of(context).size.width * _sliderValue,
-                child: ClipRect(
+              child: ClipRect(
                 child: Image.network(
-                  'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=1200&h=800&fit=crop',
+                  LandingConstants.afterImageUrl,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
-                  return Container(color: Colors.grey[700]);
+                    return Container(color: Colors.grey[700]);
                   },
                 ),
               ),
             ),
-            
-            // After label
             Positioned(
               top: 20,
               right: 20,
               child: Opacity(
                 opacity: _sliderValue > 0.5 ? 1.0 : 0.3,
-                child: const _BeforeAfterLabel('AFTER', Color(0xFF10B981)),
+                child: const _BeforeAfterLabel('APRÈS', Color(0xFF10B981)),
               ),
             ),
-            
             // Slider line
             Positioned(
               left: MediaQuery.of(context).size.width * _sliderValue - 2,
@@ -204,7 +202,6 @@ class _BeforeAfterSectionState extends State<BeforeAfterSection> {
                 ),
               ),
             ),
-            
             // Gesture detector
             Positioned.fill(
               child: GestureDetector(
@@ -226,29 +223,29 @@ class _BeforeAfterSectionState extends State<BeforeAfterSection> {
     );
   }
 
-  Widget _buildResultStat(String value, String label, IconData icon) {
+  Widget _buildResultStat(ResultStat stat) {
     return Column(
       children: [
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFFEC4899), Color(0xFFF59E0B)],
+            gradient: LinearGradient(
+              colors: [LandingConstants.pinkAccent, LandingConstants.yellowAccent],
             ),
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFEC4899).withOpacity(0.4),
+                color: LandingConstants.pinkAccent.withOpacity(0.4),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
             ],
           ),
-          child: Icon(icon, color: Colors.white, size: 32),
+          child: Icon(stat.icon, color: Colors.white, size: 32),
         ),
         const SizedBox(height: 16),
         Text(
-          value,
+          stat.value,
           style: const TextStyle(
             fontSize: 36,
             fontWeight: FontWeight.w900,
@@ -257,7 +254,7 @@ class _BeforeAfterSectionState extends State<BeforeAfterSection> {
         ),
         const SizedBox(height: 4),
         Text(
-          label,
+          stat.label,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,

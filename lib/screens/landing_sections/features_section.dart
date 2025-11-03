@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'landing_constants.dart';
 
 class FeaturesSection extends StatelessWidget {
   const FeaturesSection({super.key});
@@ -13,57 +14,21 @@ class FeaturesSection extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 1200),
           child: Column(
             children: [
-              // Badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF8B5CF6), Color(0xFF3B82F6)],
-                  ),
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF8B5CF6).withOpacity(0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.stars, color: Colors.white, size: 20),
-                    SizedBox(width: 10),
-                    Text(
-                      'FEATURES',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              
+              _buildBadge(),
               const SizedBox(height: 40),
-              
-              const Text(
-                'Everything You Need, Nothing You Don\'t',
+              Text(
+                LandingConstants.featuresTitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 46,
                   fontWeight: FontWeight.w900,
                   height: 1.2,
                   letterSpacing: -1,
                 ),
               ),
-              
               const SizedBox(height: 30),
-              
               Text(
-                'Designed with you in mind. Every feature serves a purpose.',
+                LandingConstants.featuresDescription,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
@@ -72,72 +37,8 @@ class FeaturesSection extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              
               const SizedBox(height: 80),
-              
-              // Features Grid
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final crossAxisCount = constraints.maxWidth > 900 
-                      ? 3 
-                      : constraints.maxWidth > 600 
-                          ? 2 
-                          : 1;
-                  
-                  return GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: 30,
-                    mainAxisSpacing: 30,
-                    childAspectRatio: 0.85,
-                    children: [
-                      _buildFeatureCard(
-                        'Premium Materials',
-                        'Crafted from aircraft-grade aluminum and reinforced with carbon fiber for maximum durability',
-                        Icons.construction,
-                        const Color(0xFFEF4444),
-                        'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=400&fit=crop',
-                      ),
-                      _buildFeatureCard(
-                        'Smart Technology',
-                        'Built-in AI chip learns your preferences and adapts automatically for the perfect experience',
-                        Icons.memory,
-                        const Color(0xFF10B981),
-                        'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop',
-                      ),
-                      _buildFeatureCard(
-                        'Long Battery Life',
-                        '72-hour battery life on a single charge, with fast charging that gets you to 80% in 30 minutes',
-                        Icons.battery_charging_full,
-                        const Color(0xFF3B82F6),
-                        'https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=600&h=400&fit=crop',
-                      ),
-                      _buildFeatureCard(
-                        'Weather Resistant',
-                        'IP68 water and dust resistance means you can use it anywhere, in any conditions',
-                        Icons.water_drop,
-                        const Color(0xFF8B5CF6),
-                        'https://images.unsplash.com/photo-1527489377706-5bf97e608852?w=600&h=400&fit=crop',
-                      ),
-                      _buildFeatureCard(
-                        'Ergonomic Design',
-                        'Carefully engineered to fit perfectly in your hand with balanced weight distribution',
-                        Icons.touch_app,
-                        const Color(0xFFF59E0B),
-                        'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop',
-                      ),
-                      _buildFeatureCard(
-                        'Universal Compatibility',
-                        'Works seamlessly with iOS, Android, Windows, Mac, and all major smart home systems',
-                        Icons.phone_android,
-                        const Color(0xFFEC4899),
-                        'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&fit=crop',
-                      ),
-                    ],
-                  );
-                },
-              ),
+              _buildFeaturesGrid(),
             ],
           ),
         ),
@@ -145,7 +46,78 @@ class FeaturesSection extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureCard(String title, String description, IconData icon, Color color, String imageUrl) {
+  Widget _buildBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [LandingConstants.purple, LandingConstants.blue],
+        ),
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: LandingConstants.purple.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.stars, color: Colors.white, size: 20),
+          SizedBox(width: 10),
+          Text(
+            LandingConstants.featuresBadge,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              letterSpacing: 2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeaturesGrid() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final crossAxisCount = constraints.maxWidth > 900
+            ? 3
+            : constraints.maxWidth > 600
+                ? 2
+                : 1;
+
+        return GridView.count(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: crossAxisCount,
+          crossAxisSpacing: 30,
+          mainAxisSpacing: 30,
+          childAspectRatio: 0.85,
+          children: LandingConstants.features
+              .map((feature) => _buildFeatureCard(
+                    feature.title,
+                    feature.description,
+                    feature.icon,
+                    feature.color,
+                    feature.imageUrl,
+                  ))
+              .toList(),
+        );
+      },
+    );
+  }
+
+  Widget _buildFeatureCard(
+    String title,
+    String description,
+    IconData icon,
+    Color color,
+    String imageUrl,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -165,7 +137,6 @@ class FeaturesSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image header
             Expanded(
               flex: 3,
               child: Stack(
@@ -174,9 +145,8 @@ class FeaturesSection extends StatelessWidget {
                     child: Image.network(
                       imageUrl,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(color: Colors.grey[200]);
-                      },
+                      errorBuilder: (_, __, ___) =>
+                          Container(color: Colors.grey[200]),
                     ),
                   ),
                   Positioned.fill(
@@ -215,7 +185,6 @@ class FeaturesSection extends StatelessWidget {
                 ],
               ),
             ),
-            // Content
             Expanded(
               flex: 2,
               child: Padding(
@@ -251,3 +220,4 @@ class FeaturesSection extends StatelessWidget {
     );
   }
 }
+

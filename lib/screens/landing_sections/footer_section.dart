@@ -10,7 +10,23 @@ class FooterSection extends StatefulWidget {
 }
 
 class _FooterSectionState extends State<FooterSection> {
-  final TextEditingController _emailController = TextEditingController();
+  static const _kMaxWidth = 1400.0;
+  static const _kPadding = EdgeInsets.symmetric(vertical: 80, horizontal: 40);
+  static const _kBackgroundColor = Color(0xFF0F172A);
+  static const _kPrimaryColor = Color(0xFF8B5CF6);
+  static const _kPinkColor = Color(0xFFEC4899);
+  static const _kBrandName = 'Nova Ai Market';
+  static const _kDescription = 'Premium products that make a difference.\nTrusted by thousands worldwide.';
+  static const _kEmailSupport = 'support@novaaimarket.com';
+  static const _kSocialUrls = {
+    'facebook': 'https://facebook.com/novaaimarket',
+    'instagram': 'https://instagram.com/novaaimarket',
+    'twitter': 'https://twitter.com/novaaimarket',
+    'youtube': 'https://youtube.com/@novaaimarket',
+    'blog': 'https://blog.novaaimarket.com',
+  };
+
+  final _emailController = TextEditingController();
 
   @override
   void dispose() {
@@ -18,234 +34,96 @@ class _FooterSectionState extends State<FooterSection> {
     super.dispose();
   }
 
-  // Launch URL helper
   Future<void> _launchURL(String url) async {
-    final Uri uri = Uri.parse(url);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not open $url')),
-        );
-      }
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication) && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not open $url')),
+      );
     }
   }
 
-  // Handle newsletter subscription
   void _subscribeNewsletter() {
     final email = _emailController.text.trim();
-    if (email.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter your email address'),
-          backgroundColor: Colors.orange,
-        ),
-      );
+    if (email.isEmpty || !email.contains('@') || !email.contains('.')) {
+      _showSnackBar('Please enter a valid email address', Colors.orange);
       return;
     }
-
-    if (!email.contains('@') || !email.contains('.')) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a valid email address'),
-          backgroundColor: Colors.orange,
-        ),
-      );
-      return;
-    }
-
-    // Simulate subscription (you can connect to Firebase or backend here)
     _emailController.clear();
+    _showSnackBar('✓ Successfully subscribed! Check your email.', Colors.green);
+  }
+
+  void _showSnackBar(String message, Color? backgroundColor) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('✓ Successfully subscribed! Check your email.'),
-        backgroundColor: Colors.green,
-        action: SnackBarAction(
-          label: 'OK',
-          textColor: Colors.white,
-          onPressed: () {},
-        ),
-      ),
+      SnackBar(content: Text(message), backgroundColor: backgroundColor),
     );
   }
 
-  // Handle footer link clicks
   void _handleLinkClick(String category, String link) {
-    switch (link.toLowerCase()) {
-      // Shop links
-      case 'products':
-        Navigator.pushNamed(context, '/home');
-        break;
-      case 'pricing':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Opening Pricing...')),
-        );
-        break;
-      case 'deals':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Opening Special Deals...')),
-        );
-        break;
-      case 'gift cards':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Opening Gift Cards...')),
-        );
-        break;
-
-      // Support links
-      case 'faq':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Opening FAQ...')),
-        );
-        break;
-      case 'contact':
-        _launchURL('mailto:support@novaaimarket.com?subject=Support Request');
-        break;
-      case 'shipping':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Opening Shipping Info...')),
-        );
-        break;
-      case 'returns':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Opening Returns Policy...')),
-        );
-        break;
-
-      // Company links
-      case 'about':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Opening About Us...')),
-        );
-        break;
-      case 'blog':
-        _launchURL('https://blog.novaaimarket.com');
-        break;
-      case 'careers':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Opening Careers...')),
-        );
-        break;
-      case 'press':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Opening Press Kit...')),
-        );
-        break;
-
-      // Legal links
-      case 'privacy':
-        Navigator.pushNamed(context, '/privacy');
-        break;
-      case 'terms':
-        Navigator.pushNamed(context, '/terms');
-        break;
-      case 'cookies':
-        Navigator.pushNamed(context, '/cookies');
-        break;
-      case 'security':
-        Navigator.pushNamed(context, '/security');
-        break;
-
-      default:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Opening $link...')),
-        );
+    final linkLower = link.toLowerCase();
+    if (linkLower == 'products') Navigator.pushNamed(context, '/home');
+    else if (linkLower == 'contact') _launchURL('mailto:$_kEmailSupport?subject=Support Request');
+    else if (linkLower == 'blog') _launchURL(_kSocialUrls['blog']!);
+    else if (['privacy', 'terms', 'cookies', 'security'].contains(linkLower)) {
+      Navigator.pushNamed(context, '/$linkLower');
+    } else {
+      _showSnackBar('Opening $link...', null);
     }
   }
 
-  // Handle social media clicks
-  void _handleSocialClick(String platform) {
-    switch (platform) {
-      case 'facebook':
-        _launchURL('https://facebook.com/novaaimarket');
-        break;
-      case 'instagram':
-        _launchURL('https://instagram.com/novaaimarket');
-        break;
-      case 'twitter':
-        _launchURL('https://twitter.com/novaaimarket');
-        break;
-      case 'youtube':
-        _launchURL('https://youtube.com/@novaaimarket');
-        break;
-    }
-  }
+  void _handleSocialClick(String platform) => _launchURL(_kSocialUrls[platform]!);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF0F172A),
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 40),
+      color: _kBackgroundColor,
+      padding: _kPadding,
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1400),
+          constraints: const BoxConstraints(maxWidth: _kMaxWidth),
           child: Column(
             children: [
-              // Main Footer Content
               LayoutBuilder(
                 builder: (context, constraints) {
                   final isWide = constraints.maxWidth > 900;
-                  
-                  if (isWide) {
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(flex: 2, child: _buildBrandColumn()),
-                        const SizedBox(width: 60),
-                        Expanded(child: _buildLinkColumn('Shop', ['Products', 'Pricing', 'Deals', 'Gift Cards'])),
-                        Expanded(child: _buildLinkColumn('Support', ['FAQ', 'Contact', 'Shipping', 'Returns'])),
-                        Expanded(child: _buildLinkColumn('Company', ['About', 'Blog', 'Careers', 'Press'])),
-                        Expanded(child: _buildLinkColumn('Legal', ['Privacy', 'Terms', 'Cookies', 'Security'])),
-                      ],
-                    );
-                  } else {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildBrandColumn(),
-                        const SizedBox(height: 40),
-                        _buildLinkColumn('Shop', ['Products', 'Pricing', 'Deals', 'Gift Cards']),
-                        const SizedBox(height: 30),
-                        _buildLinkColumn('Support', ['FAQ', 'Contact', 'Shipping', 'Returns']),
-                        const SizedBox(height: 30),
-                        _buildLinkColumn('Company', ['About', 'Blog', 'Careers', 'Press']),
-                        const SizedBox(height: 30),
-                        _buildLinkColumn('Legal', ['Privacy', 'Terms', 'Cookies', 'Security']),
-                      ],
-                    );
-                  }
+                  return isWide
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(flex: 2, child: _buildBrandColumn()),
+                            const SizedBox(width: 60),
+                            Expanded(child: _buildLinkColumn('Shop', ['Products', 'Pricing', 'Deals', 'Gift Cards'])),
+                            Expanded(child: _buildLinkColumn('Support', ['FAQ', 'Contact', 'Shipping', 'Returns'])),
+                            Expanded(child: _buildLinkColumn('Company', ['About', 'Blog', 'Careers', 'Press'])),
+                            Expanded(child: _buildLinkColumn('Legal', ['Privacy', 'Terms', 'Cookies', 'Security'])),
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildBrandColumn(),
+                            const SizedBox(height: 40),
+                            _buildLinkColumn('Shop', ['Products', 'Pricing', 'Deals', 'Gift Cards']),
+                            const SizedBox(height: 30),
+                            _buildLinkColumn('Support', ['FAQ', 'Contact', 'Shipping', 'Returns']),
+                            const SizedBox(height: 30),
+                            _buildLinkColumn('Company', ['About', 'Blog', 'Careers', 'Press']),
+                            const SizedBox(height: 30),
+                            _buildLinkColumn('Legal', ['Privacy', 'Terms', 'Cookies', 'Security']),
+                          ],
+                        );
                 },
               ),
-              
               const SizedBox(height: 60),
-              
-              // Divider
               Divider(color: Colors.white.withOpacity(0.1), thickness: 1),
-              
               const SizedBox(height: 40),
-              
-              // Bottom Bar
               LayoutBuilder(
-                builder: (context, constraints) {
-                  final isWide = constraints.maxWidth > 700;
-                  
-                  if (isWide) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildCopyright(),
-                        _buildSocialLinks(),
-                      ],
-                    );
-                  } else {
-                    return Column(
-                      children: [
-                        _buildSocialLinks(),
-                        const SizedBox(height: 20),
-                        _buildCopyright(),
-                      ],
-                    );
-                  }
-                },
+                builder: (context, constraints) => constraints.maxWidth > 700
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [_buildCopyright(), _buildSocialLinks()],
+                      )
+                    : Column(children: [_buildSocialLinks(), const SizedBox(height: 20), _buildCopyright()]),
               ),
             ],
           ),
@@ -258,57 +136,29 @@ class _FooterSectionState extends State<FooterSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Logo
         Row(
           children: [
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF8B5CF6), Color(0xFFEC4899)],
-                ),
+                gradient: const LinearGradient(colors: [_kPrimaryColor, _kPinkColor]),
                 borderRadius: BorderRadius.circular(12),
               ),
-child: NovaStoreLogo(
-                              size: 60,
-                              showText: false,
-                              color: Colors.white,
-                            ),            ),
-            const SizedBox(width: 12),
-            const Text(
-              'Nova Ai Market',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
-              ),
+              child: const NovaStoreLogo(size: 60, showText: false, color: Colors.white),
             ),
+            const SizedBox(width: 12),
+            const Text(_kBrandName, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Colors.white)),
           ],
         ),
-        
         const SizedBox(height: 20),
-        
-        Text(
-          'Premium products that make a difference.\nTrusted by thousands worldwide.',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[400],
-            height: 1.6,
-          ),
-        ),
-        
+        Text(_kDescription, style: TextStyle(fontSize: 14, color: Colors.grey[400], height: 1.6)),
         const SizedBox(height: 24),
-        
-        // Newsletter
         Container(
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.1),
-              width: 1,
-            ),
+            border: Border.all(color: Colors.white.withOpacity(0.1)),
           ),
           child: Row(
             children: [
@@ -328,18 +178,13 @@ child: NovaStoreLogo(
               ElevatedButton(
                 onPressed: _subscribeNewsletter,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF8B5CF6),
+                  backgroundColor: _kPrimaryColor,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   elevation: 0,
                 ),
-                child: const Text(
-                  'Subscribe',
-                  style: TextStyle(fontWeight: FontWeight.w700),
-                ),
+                child: const Text('Subscribe', style: TextStyle(fontWeight: FontWeight.w700)),
               ),
             ],
           ),
@@ -352,48 +197,23 @@ child: NovaStoreLogo(
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w900,
-            color: Colors.white,
-          ),
-        ),
+        Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white)),
         const SizedBox(height: 20),
         ...links.map((link) => Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: InkWell(
-              onTap: () => _handleLinkClick(title, link),
-              hoverColor: Colors.white.withOpacity(0.05),
-              borderRadius: BorderRadius.circular(4),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Text(
-                  link,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[400],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+              padding: const EdgeInsets.only(bottom: 12),
+              child: InkWell(
+                onTap: () => _handleLinkClick(title, link),
+                child: Text(link, style: TextStyle(fontSize: 14, color: Colors.grey[400], fontWeight: FontWeight.w500)),
               ),
-            ),
-          ),
-        )),
+            )),
       ],
     );
   }
 
   Widget _buildCopyright() {
     return Text(
-      '© ${DateTime.now().year} Nova Ai Market. All rights reserved.',
-      style: TextStyle(
-        fontSize: 14,
-        color: Colors.grey[500],
-      ),
+      '© ${DateTime.now().year} $_kBrandName. All rights reserved.',
+      style: TextStyle(fontSize: 14, color: Colors.grey[500]),
     );
   }
 
@@ -401,43 +221,28 @@ child: NovaStoreLogo(
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildSocialIcon(Icons.facebook_rounded, 'facebook', const Color(0xFF1877F2)),
+        _buildSocialIcon(Icons.facebook_rounded, 'facebook'),
         const SizedBox(width: 12),
-        _buildSocialIcon(Icons.camera_alt_rounded, 'instagram', const Color(0xFFE4405F)), // Instagram
+        _buildSocialIcon(Icons.camera_alt_rounded, 'instagram'),
         const SizedBox(width: 12),
-        _buildSocialIcon(Icons.close_rounded, 'twitter', const Color(0xFF1DA1F2)), // Twitter/X
+        _buildSocialIcon(Icons.close_rounded, 'twitter'),
         const SizedBox(width: 12),
-        _buildSocialIcon(Icons.play_circle_fill_rounded, 'youtube', const Color(0xFFFF0000)), // YouTube
+        _buildSocialIcon(Icons.play_circle_fill_rounded, 'youtube'),
       ],
     );
   }
 
-  Widget _buildSocialIcon(IconData icon, String platform, Color brandColor) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: InkWell(
-        onTap: () => _handleSocialClick(platform),
-        borderRadius: BorderRadius.circular(10),
-        onHover: (isHovering) {
-          // Visual feedback on hover
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.1),
-              width: 1,
-            ),
-          ),
-          child: Icon(
-            icon,
-            color: Colors.grey[400],
-            size: 20,
-          ),
+  Widget _buildSocialIcon(IconData icon, String platform) {
+    return InkWell(
+      onTap: () => _handleSocialClick(platform),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
         ),
+        child: Icon(icon, color: Colors.grey[400], size: 20),
       ),
     );
   }

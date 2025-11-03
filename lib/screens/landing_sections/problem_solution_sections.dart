@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'landing_constants.dart';
 
 class ProblemSolutionSections extends StatelessWidget {
   const ProblemSolutionSections({super.key});
@@ -21,11 +22,7 @@ class ProblemSolutionSections extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Color(0xFFFEF2F2),
-            Colors.white,
-            Color(0xFFFEE2E2),
-          ],
+          colors: [Color(0xFFFEF2F2), Colors.white, Color(0xFFFEE2E2)],
         ),
       ),
       child: Center(
@@ -33,54 +30,25 @@ class ProblemSolutionSections extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 1000),
           child: Column(
             children: [
-              // Badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFEF4444).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: const Color(0xFFEF4444).withOpacity(0.3),
-                    width: 2,
-                  ),
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.warning_amber, color: Color(0xFFEF4444), size: 20),
-                    SizedBox(width: 10),
-                    Text(
-                      'THE PROBLEM THAT WE SOLVE FOR OUR CUSTOMERS',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        color: Color(0xFFEF4444),
-                        letterSpacing: 2,
-                      ),
-                    ),
-                  ],
-                ),
+              _buildBadge(
+                LandingConstants.problemBadge,
+                LandingConstants.redProblem,
+                Icons.warning_amber,
               ),
-              
               const SizedBox(height: 40),
-              
-              const Text(
-                'Tired of Products That Promise Everything But Deliver Nothing?',
+              Text(
+                LandingConstants.problemTitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 42,
                   fontWeight: FontWeight.w900,
                   height: 1.2,
                   letterSpacing: -1,
                 ),
               ),
-              
               const SizedBox(height: 30),
-              
               Text(
-                'You\'ve tried countless products. Spent money on things that broke after a week. '
-                'Dealt with poor customer service. Watched your hard-earned money disappear on '
-                'low-quality items that didn\'t solve your problem.',
+                LandingConstants.problemDescription,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
@@ -89,10 +57,7 @@ class ProblemSolutionSections extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              
               const SizedBox(height: 60),
-              
-              // Pain Points Grid
               LayoutBuilder(
                 builder: (context, constraints) {
                   final isWide = constraints.maxWidth > 800;
@@ -103,26 +68,14 @@ class ProblemSolutionSections extends StatelessWidget {
                     crossAxisSpacing: 24,
                     mainAxisSpacing: 24,
                     childAspectRatio: isWide ? 0.85 : 1.2,
-                    children: [
-                      _buildPainPointCard(
-                        '💸',
-                        'Wasted Money',
-                        'Bought products that broke within days, leaving you frustrated and out of pocket',
-                        'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=600&h=400&fit=crop',
-                      ),
-                      _buildPainPointCard(
-                        '⏰',
-                        'Time Lost',
-                        'Endless hours researching, comparing, and returning subpar products',
-                        'https://images.unsplash.com/photo-1501139083538-0139583c060f?w=600&h=400&fit=crop',
-                      ),
-                      _buildPainPointCard(
-                        '😤',
-                        'Poor Quality',
-                        'Cheap materials, bad design, products that look nothing like the pictures',
-                        'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&h=400&fit=crop',
-                      ),
-                    ],
+                    children: LandingConstants.painPoints
+                        .map((point) => _buildPainPointCard(
+                              point.emoji,
+                              point.title,
+                              point.description,
+                              point.imageUrl,
+                            ))
+                        .toList(),
                   );
                 },
               ),
@@ -133,15 +86,50 @@ class ProblemSolutionSections extends StatelessWidget {
     );
   }
 
-  Widget _buildPainPointCard(String emoji, String title, String description, String imageUrl) {
+  Widget _buildBadge(String text, Color color, IconData icon) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: color.withOpacity(0.3), width: 2),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(width: 10),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w900,
+              color: color,
+              letterSpacing: 2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPainPointCard(
+    String emoji,
+    String title,
+    String description,
+    String imageUrl,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFEF4444).withOpacity(0.2), width: 2),
+        border: Border.all(
+          color: LandingConstants.redProblem.withOpacity(0.2),
+          width: 2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFEF4444).withOpacity(0.1),
+            color: LandingConstants.redProblem.withOpacity(0.1),
             blurRadius: 30,
             offset: const Offset(0, 10),
             spreadRadius: 5,
@@ -152,17 +140,14 @@ class ProblemSolutionSections extends StatelessWidget {
         borderRadius: BorderRadius.circular(22),
         child: Stack(
           children: [
-            // Background image
             Positioned.fill(
               child: Image.network(
                 imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(color: Colors.grey[200]);
-                },
+                errorBuilder: (_, __, ___) =>
+                    Container(color: Colors.grey[200]),
               ),
             ),
-            // Gradient overlay
             Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
@@ -177,17 +162,13 @@ class ProblemSolutionSections extends StatelessWidget {
                 ),
               ),
             ),
-            // Content
             Padding(
               padding: const EdgeInsets.all(24),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    emoji,
-                    style: const TextStyle(fontSize: 48),
-                  ),
+                  Text(emoji, style: const TextStyle(fontSize: 48)),
                   const SizedBox(height: 12),
                   Text(
                     title,
@@ -223,11 +204,7 @@ class ProblemSolutionSections extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Color(0xFFF0FDF4),
-            Colors.white,
-            Color(0xFFD1FAE5),
-          ],
+          colors: [Color(0xFFF0FDF4), Colors.white, Color(0xFFD1FAE5)],
         ),
       ),
       child: Center(
@@ -235,53 +212,25 @@ class ProblemSolutionSections extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 1100),
           child: Column(
             children: [
-              // Badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF10B981).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: const Color(0xFF10B981).withOpacity(0.3),
-                    width: 2,
-                  ),
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.check_circle, color: Color(0xFF10B981), size: 20),
-                    SizedBox(width: 10),
-                    Text(
-                      'THE SOLUTION',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        color: Color(0xFF10B981),
-                        letterSpacing: 2,
-                      ),
-                    ),
-                  ],
-                ),
+              _buildBadge(
+                LandingConstants.solutionBadge,
+                LandingConstants.greenSolution,
+                Icons.check_circle,
               ),
-              
               const SizedBox(height: 40),
-              
-              const Text(
-                'Introducing the Premium Solution You\'ve Been Waiting For',
+              Text(
+                LandingConstants.solutionTitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 44,
                   fontWeight: FontWeight.w900,
                   height: 1.2,
                   letterSpacing: -1,
                 ),
               ),
-              
               const SizedBox(height: 30),
-              
               Text(
-                'Finally, a product that actually works. Built with premium materials, '
-                'backed by real science, and trusted by thousands of satisfied customers.',
+                LandingConstants.solutionDescription,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
@@ -290,10 +239,7 @@ class ProblemSolutionSections extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              
               const SizedBox(height: 70),
-              
-              // Benefits Grid
               LayoutBuilder(
                 builder: (context, constraints) {
                   final isWide = constraints.maxWidth > 900;
@@ -304,29 +250,15 @@ class ProblemSolutionSections extends StatelessWidget {
                     crossAxisSpacing: 30,
                     mainAxisSpacing: 30,
                     childAspectRatio: 0.9,
-                    children: [
-                      _buildLuxuryBenefitCard(
-                        Icons.diamond,
-                        'Premium Quality',
-                        'Crafted from the finest materials with attention to every detail',
-                        const Color(0xFF10B981),
-                        'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&h=400&fit=crop',
-                      ),
-                      _buildLuxuryBenefitCard(
-                        Icons.support_agent,
-                        '24/7 Support',
-                        'Our dedicated team is always here to help you succeed',
-                        const Color(0xFF3B82F6),
-                        'https://images.unsplash.com/photo-1556745753-b2904692b3cd?w=600&h=400&fit=crop',
-                      ),
-                      _buildLuxuryBenefitCard(
-                        Icons.verified_user,
-                        'Guaranteed Results',
-                        '30-day money-back guarantee if you\'re not completely satisfied',
-                        const Color(0xFF8B5CF6),
-                        'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&h=400&fit=crop',
-                      ),
-                    ],
+                    children: LandingConstants.benefits
+                        .map((benefit) => _buildLuxuryBenefitCard(
+                              benefit.icon,
+                              benefit.title,
+                              benefit.description,
+                              benefit.color,
+                              benefit.imageUrl,
+                            ))
+                        .toList(),
                   );
                 },
               ),
@@ -337,20 +269,23 @@ class ProblemSolutionSections extends StatelessWidget {
     );
   }
 
-  Widget _buildLuxuryBenefitCard(IconData icon, String title, String description, Color color, String imageUrl) {
+  Widget _buildLuxuryBenefitCard(
+    IconData icon,
+    String title,
+    String description,
+    Color color,
+    String imageUrl,
+  ) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(
-          color: color.withOpacity(0.3),
-          width: 3,
-        ),
+        border: Border.all(color: color.withOpacity(0.3), width: 3),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.3),
-            blurRadius: 40,
-            offset: const Offset(0, 20),
-            spreadRadius: 8,
+            color: color.withOpacity(0.2),
+            blurRadius: 30,
+            offset: const Offset(0, 15),
+            spreadRadius: 4,
           ),
         ],
       ),
@@ -358,17 +293,16 @@ class ProblemSolutionSections extends StatelessWidget {
         borderRadius: BorderRadius.circular(27),
         child: Stack(
           children: [
-            // Background image
+            // Image naturelle sans overlay de couleur
             Positioned.fill(
               child: Image.network(
                 imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(color: Colors.grey[200]);
-                },
+                errorBuilder: (_, __, ___) =>
+                    Container(color: Colors.grey[200]),
               ),
             ),
-            // Gradient overlay
+            // Gradient subtil pour la lisibilité du texte (sans couleur dominante)
             Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
@@ -376,14 +310,13 @@ class ProblemSolutionSections extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      color.withOpacity(0.6),
-                      color.withOpacity(0.9),
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.4),
                     ],
                   ),
                 ),
               ),
             ),
-            // Content
             Padding(
               padding: const EdgeInsets.all(32),
               child: Column(
@@ -412,12 +345,7 @@ class ProblemSolutionSections extends StatelessWidget {
                       fontSize: 24,
                       fontWeight: FontWeight.w900,
                       color: Colors.white,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black26,
-                          blurRadius: 10,
-                        ),
-                      ],
+                      shadows: [Shadow(color: Colors.black54, blurRadius: 10)],
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -428,12 +356,7 @@ class ProblemSolutionSections extends StatelessWidget {
                       fontSize: 16,
                       color: Colors.white,
                       height: 1.6,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black26,
-                          blurRadius: 10,
-                        ),
-                      ],
+                      shadows: [Shadow(color: Colors.black54, blurRadius: 10)],
                     ),
                   ),
                 ],
@@ -445,3 +368,4 @@ class ProblemSolutionSections extends StatelessWidget {
     );
   }
 }
+

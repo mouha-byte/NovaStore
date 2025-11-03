@@ -25,7 +25,7 @@ class FirebaseSeeder {
 
     final products = [
       {
-        'title': 'Smart LED Watch 2025',
+        'title': 'Mini Mixeur Bouteille USB Portable 380ml',
         'subtitle': 'Get the #1 trending smartwatch in 2025',
         'description': '''Experience the future with our revolutionary smart LED watch. Features include:
 

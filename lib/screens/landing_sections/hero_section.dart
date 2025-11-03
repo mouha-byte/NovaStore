@@ -1,228 +1,202 @@
 import 'package:flutter/material.dart';
 import '../../models/product_model.dart';
+import 'landing_constants.dart';
+import 'dart:async';
 
-class HeroSection extends StatelessWidget {
+class HeroSection extends StatefulWidget {
   final ProductModel product;
   final VoidCallback onBuyNow;
 
-  const HeroSection({
-    super.key,
-    required this.product,
-    required this.onBuyNow,
-  });
+  const HeroSection({super.key, required this.product, required this.onBuyNow});
+
+  @override
+  State<HeroSection> createState() => _HeroSectionState();
+}
+
+class _HeroSectionState extends State<HeroSection> {
+  late PageController _pageController;
+  late Timer _timer;
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+    _startAutoSlide();
+  }
+
+  void _startAutoSlide() {
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (_currentPage < LandingConstants.heroCarouselImages.length - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+      if (_pageController.hasClients) {
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
-    final isTablet = screenWidth >= 600 && screenWidth < 900;
+    final isMobile = screenWidth < LandingConstants.mobileBreakpoint;
+    final isTablet = screenWidth >= LandingConstants.mobileBreakpoint && 
+                     screenWidth < LandingConstants.tabletBreakpoint;
     
     return Container(
       height: isMobile ? 900 : (isTablet ? 800 : 750),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF6366F1),
-            Color(0xFF8B5CF6),
-            Color(0xFFEC4899),
-          ],
+      color: Colors.white,
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: isMobile ? 20 : (isTablet ? 30 : 40),
+            vertical: isMobile ? 40 : (isTablet ? 60 : 80),
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) => 
+                constraints.maxWidth > LandingConstants.tabletBreakpoint
+                ? Row(
+                    children: [
+                      Expanded(child: _buildHeroText(context)),
+                      const SizedBox(width: 60),
+                      Expanded(child: _buildHeroImage(context)),
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildHeroText(context),
+                      SizedBox(height: isMobile ? 30 : 40),
+                      _buildHeroImage(context),
+                    ],
+                  ),
+          ),
         ),
-      ),
-      child: Stack(
-        children: [
-          // Animated Background Pattern
-          Positioned.fill(
-            child: CustomPaint(
-              painter: _BackgroundPatternPainter(),
-            ),
-          ),
-          
-          // Content
-          SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: isMobile ? 20 : (isTablet ? 30 : 40), 
-                vertical: isMobile ? 40 : (isTablet ? 60 : 80)
-              ),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final isWide = constraints.maxWidth > 900;
-                  
-                  return isWide
-                      ? Row(
-                          children: [
-                            Expanded(child: _buildHeroText(context)),
-                            const SizedBox(width: 60),
-                            Expanded(child: _buildHeroImage(context)),
-                          ],
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            _buildHeroText(context),
-                            SizedBox(height: isMobile ? 30 : 40),
-                            _buildHeroImage(context),
-                          ],
-                        );
-                },
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
 
   Widget _buildHeroText(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
-    final isTablet = screenWidth >= 600 && screenWidth < 900;
+    final isMobile = screenWidth < LandingConstants.mobileBreakpoint;
+    final isTablet = screenWidth >= LandingConstants.mobileBreakpoint && 
+                     screenWidth < LandingConstants.tabletBreakpoint;
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Badge
         Container(
           padding: EdgeInsets.symmetric(
-            horizontal: isMobile ? 12 : 16, 
-            vertical: isMobile ? 6 : 8
+            horizontal: isMobile ? 12 : 16,
+            vertical: isMobile ? 6 : 8,
           ),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            gradient: LinearGradient(colors: [
+              LandingConstants.primaryColor,
+              LandingConstants.secondaryColor,
+            ]),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.4)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.trending_up, color: Colors.white, size: isMobile ? 14 : 16),
+              Icon(Icons.trending_up, 
+                   color: Colors.white, 
+                   size: isMobile ? 14 : 16),
               SizedBox(width: isMobile ? 4 : 6),
               Text(
-                '🔥 #1 Best Seller This Month',
+                LandingConstants.heroTrendingBadge,
                 style: TextStyle(
-                  color: Colors.white, 
-                  fontWeight: FontWeight.w600, 
-                  fontSize: isMobile ? 11 : 13
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: isMobile ? 11 : 13,
                 ),
               ),
             ],
           ),
         ),
-        
         SizedBox(height: isMobile ? 20 : 30),
-        
-        // Main Headline
         Text(
-          product.title,
+          widget.product.title,
           style: TextStyle(
             fontSize: isMobile ? 32 : (isTablet ? 44 : 58),
             fontWeight: FontWeight.w900,
-            color: Colors.white,
+            color: LandingConstants.darkGray,
             height: 1.1,
             letterSpacing: isMobile ? -1 : -2,
           ),
         ),
-        
         SizedBox(height: isMobile ? 16 : 20),
-        
-        // Subheadline
         Text(
-          'Transform Your Life with Premium Quality That Actually Delivers Results',
+          LandingConstants.heroSubtitle,
           style: TextStyle(
             fontSize: isMobile ? 16 : (isTablet ? 18 : 22),
-            color: Colors.white.withOpacity(0.95),
+            color: LandingConstants.mediumGray,
             height: 1.5,
             fontWeight: FontWeight.w400,
           ),
         ),
-        
         SizedBox(height: isMobile ? 24 : 40),
-        
-        // Trust Indicators
         Wrap(
           spacing: isMobile ? 12 : 24,
           runSpacing: isMobile ? 8 : 12,
-          children: [
-            _buildMiniTrustBadge(Icons.verified_user, '30-Day Guarantee', isMobile),
-            _buildMiniTrustBadge(Icons.local_shipping, 'Free Shipping', isMobile),
-            _buildMiniTrustBadge(Icons.star, '4.9/5 (1,200+ Reviews)', isMobile),
-          ],
+          children: LandingConstants.heroBadges
+              .map((badge) => _buildBadge(badge.icon, badge.text, isMobile))
+              .toList(),
         ),
-        
         SizedBox(height: isMobile ? 32 : 50),
-        
-        // CTA Buttons
-        isMobile 
-          ? Column(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: onBuyNow,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF6366F1),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      elevation: 8,
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Get Started Now',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                        ),
-                        SizedBox(width: 8),
-                        Icon(Icons.arrow_forward, size: 18),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : Row(
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                onPressed: onBuyNow,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color(0xFF6366F1),
-                  padding: EdgeInsets.symmetric(vertical: isTablet ? 16 : 20),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  elevation: 8,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Get Started Now',
-                      style: TextStyle(fontSize: isTablet ? 16 : 18, fontWeight: FontWeight.w700),
-                    ),
-                    SizedBox(width: isTablet ? 8 : 10),
-                    Icon(Icons.arrow_forward, size: isTablet ? 18 : 20),
-                  ],
-                ),
+        SizedBox(
+          width: isMobile ? double.infinity : null,
+          child: ElevatedButton(
+            onPressed: widget.onBuyNow,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: LandingConstants.primaryColor,
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(
+                vertical: isMobile ? 16 : (isTablet ? 16 : 20),
+                horizontal: isMobile ? 0 : 40,
               ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              elevation: 8,
             ),
-          ],
+            child: Row(
+              mainAxisSize: isMobile ? MainAxisSize.max : MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  LandingConstants.heroCTA,
+                  style: TextStyle(
+                    fontSize: isTablet ? 16 : 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(width: isTablet ? 8 : 10),
+                Icon(Icons.arrow_forward, size: isTablet ? 18 : 20),
+              ],
+            ),
+          ),
         ),
-        
         const SizedBox(height: 16),
-        
-        // Secondary Info
         Text(
-          '✓ No credit card required  ✓ Cancel anytime',
+          LandingConstants.heroFinePrint,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.8),
+            color: LandingConstants.mediumGray,
             fontSize: 14,
           ),
         ),
@@ -230,148 +204,179 @@ class HeroSection extends StatelessWidget {
     );
   }
 
-  Widget _buildMiniTrustBadge(IconData icon, String text, bool isMobile) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: Colors.white, size: isMobile ? 16 : 18),
-        SizedBox(width: isMobile ? 4 : 6),
-        Text(
-          text,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: isMobile ? 12 : 14,
-            fontWeight: FontWeight.w600,
-          ),
+  Widget _buildBadge(IconData icon, String text, bool isMobile) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(icon, color: LandingConstants.primaryColor, 
+           size: isMobile ? 16 : 18),
+      SizedBox(width: isMobile ? 4 : 6),
+      Text(
+        text,
+        style: TextStyle(
+          color: LandingConstants.lightGray,
+          fontSize: isMobile ? 12 : 14,
+          fontWeight: FontWeight.w600,
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 
   Widget _buildHeroImage(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
-    final isTablet = screenWidth >= 600 && screenWidth < 900;
-    
-    // Calculate responsive sizes
-    final maxHeight = isMobile ? 300.0 : (isTablet ? 400.0 : 550.0);
-    final maxWidth = isMobile ? 300.0 : (isTablet ? 400.0 : 550.0);
-    final borderRadius = isMobile ? 20.0 : (isTablet ? 25.0 : 30.0);
+    final isMobile = screenWidth < LandingConstants.mobileBreakpoint;
+    final isTablet = screenWidth >= LandingConstants.mobileBreakpoint && 
+                     screenWidth < LandingConstants.tabletBreakpoint;
+    final size = isMobile ? 300.0 : (isTablet ? 400.0 : 550.0);
+    final radius = isMobile ? 20.0 : (isTablet ? 25.0 : 30.0);
     
     return Container(
-      constraints: BoxConstraints(maxHeight: maxHeight, maxWidth: maxWidth),
+      constraints: BoxConstraints(maxHeight: size, maxWidth: size),
       child: Stack(
         children: [
-          // Glow Effect
+          // Gradient background
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white.withOpacity(isMobile ? 0.2 : 0.3),
-                    blurRadius: isMobile ? 40 : (isTablet ? 60 : 80),
-                    spreadRadius: isMobile ? 25 : (isTablet ? 35 : 50),
-                  ),
-                ],
+                gradient: RadialGradient(
+                  colors: [
+                    LandingConstants.primaryColor.withOpacity(0.15),
+                    LandingConstants.secondaryColor.withOpacity(0.05),
+                    Colors.transparent,
+                  ],
+                ),
               ),
             ),
           ),
-          
-          // Product Image
+          // Carousel with 5 images
           ClipRRect(
-            borderRadius: BorderRadius.circular(borderRadius),
-            child: Image.network(
-              product.images.isNotEmpty 
-                  ? product.images.first 
-                  : 'https://via.placeholder.com/600',
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(borderRadius),
+            borderRadius: BorderRadius.circular(radius),
+            child: Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: LandingConstants.primaryColor.withOpacity(0.2),
+                    blurRadius: 30,
+                    offset: const Offset(0, 15),
                   ),
-                  child: Center(
-                    child: Icon(
-                      Icons.image, 
-                      size: isMobile ? 60 : (isTablet ? 80 : 100), 
-                      color: Colors.white
+                ],
+              ),
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+                itemCount: LandingConstants.heroCarouselImages.length,
+                itemBuilder: (context, index) {
+                  return Image.network(
+                    LandingConstants.heroCarouselImages[index],
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        color: const Color(0xFFF3F4F6),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        ),
+                      );
+                    },
+                    errorBuilder: (_, __, ___) => Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF3F4F6),
+                        borderRadius: BorderRadius.circular(radius),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.image,
+                          size: isMobile ? 60 : (isTablet ? 80 : 100),
+                          color: const Color(0xFF9CA3AF),
+                        ),
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
-          
-          // Floating Stats
+          // Page indicators
+          Positioned(
+            bottom: 20,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                LandingConstants.heroCarouselImages.length,
+                (index) => AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: _currentPage == index ? 24 : 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: _currentPage == index
+                        ? LandingConstants.primaryColor
+                        : Colors.white.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Rating badge
           if (!isMobile)
             Positioned(
               top: 20,
               right: 20,
               child: Container(
                 padding: EdgeInsets.all(isTablet ? 12 : 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: const Column(
-                children: [
-                  Text(
-                    '4.9',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF6366F1),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
                     ),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.star, color: Color(0xFFFBBF24), size: 16),
-                      Icon(Icons.star, color: Color(0xFFFBBF24), size: 16),
-                      Icon(Icons.star, color: Color(0xFFFBBF24), size: 16),
-                      Icon(Icons.star, color: Color(0xFFFBBF24), size: 16),
-                      Icon(Icons.star, color: Color(0xFFFBBF24), size: 16),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      '4.9',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w900,
+                        color: LandingConstants.primaryColor,
+                      ),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: List.generate(
+                        5,
+                        (_) => Icon(
+                          Icons.star,
+                          color: LandingConstants.yellow,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
   }
 }
 
-// Background Pattern Painter
-class _BackgroundPatternPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.05)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-
-    for (var i = 0; i < 10; i++) {
-      canvas.drawCircle(
-        Offset(size.width * 0.2, size.height * (i / 10)),
-        50 + (i * 20),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}

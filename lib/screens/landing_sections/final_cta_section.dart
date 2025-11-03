@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'landing_constants.dart';
 
 class FinalCTASection extends StatelessWidget {
   final VoidCallback onBuyNow;
@@ -28,192 +29,199 @@ class FinalCTASection extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 800),
           child: Column(
             children: [
-              // Icon
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF8B5CF6), Color(0xFFEC4899)],
-                  ),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF8B5CF6).withOpacity(0.5),
-                      blurRadius: 40,
-                      spreadRadius: 10,
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.rocket_launch,
-                  color: Colors.white,
-                  size: 48,
-                ),
-              ),
-              
+              _buildIcon(),
               const SizedBox(height: 40),
-              
-              const Text(
-                'Ready to Transform Your Life?',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 48,
-                  fontWeight: FontWeight.w900,
-                  height: 1.1,
-                  letterSpacing: -1,
-                  color: Colors.white,
-                ),
-              ),
-              
+              _buildTitle(),
               const SizedBox(height: 30),
-              
-              Text(
-                'Join 50,000+ happy customers who have already made the switch. '
-                'Don\'t let this opportunity pass you by.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.grey[400],
-                  height: 1.6,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              
+              _buildSubtitle(),
               const SizedBox(height: 60),
-              
-              // Main CTA Button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: onBuyNow,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFEC4899),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 28),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 12,
-                    shadowColor: const Color(0xFFEC4899).withOpacity(0.5),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'GET YOURS NOW',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                      SizedBox(width: 16),
-                      Icon(Icons.arrow_forward, size: 28),
-                    ],
-                  ),
-                ),
-              ),
-              
+              _buildCTAButton(),
               const SizedBox(height: 24),
-              
-              // Trust badges
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.lock, color: Colors.white70, size: 16),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Secure Checkout',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[400],
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  const Icon(Icons.verified_user, color: Colors.white70, size: 16),
-                  const SizedBox(width: 8),
-                  Text(
-                    '30-Day Guarantee',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[400],
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              
+              _buildTrustBadges(),
               const SizedBox(height: 60),
-              
-              // Benefits Grid
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final isWide = constraints.maxWidth > 700;
-                  return Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: isWide ? 40 : 20,
-                    runSpacing: 30,
-                    children: [
-                      _buildBenefitItem(Icons.local_shipping, 'Free Shipping'),
-                      _buildBenefitItem(Icons.support_agent, '24/7 Support'),
-                      _buildBenefitItem(Icons.verified, '2-Year Warranty'),
-                      _buildBenefitItem(Icons.currency_exchange, 'Money Back'),
-                    ],
-                  );
-                },
-              ),
-              
+              _buildBenefitsGrid(),
               const SizedBox(height: 60),
-              
-              // Social proof
-              Container(
-                padding: const EdgeInsets.all(32),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.1),
-                    width: 1,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        5,
-                        (index) => const Icon(
-                          Icons.star,
-                          color: Color(0xFFFBBF24),
-                          size: 32,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      '4.9 out of 5 stars',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Based on 12,483 reviews',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[400],
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              _buildSocialProof(),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildIcon() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [LandingConstants.secondaryColor, LandingConstants.pinkAccent],
+        ),
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: LandingConstants.secondaryColor.withOpacity(0.5),
+            blurRadius: 40,
+            spreadRadius: 10,
+          ),
+        ],
+      ),
+      child: const Icon(
+        Icons.rocket_launch,
+        color: Colors.white,
+        size: 48,
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return Text(
+      LandingConstants.finalCTATitle,
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        fontSize: 48,
+        fontWeight: FontWeight.w900,
+        height: 1.1,
+        letterSpacing: -1,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  Widget _buildSubtitle() {
+    return Text(
+      LandingConstants.finalCTASubtitle,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 20,
+        color: Colors.grey[400],
+        height: 1.6,
+        fontWeight: FontWeight.w400,
+      ),
+    );
+  }
+
+  Widget _buildCTAButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: onBuyNow,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: LandingConstants.pinkAccent,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 28),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 12,
+          shadowColor: LandingConstants.pinkAccent.withOpacity(0.5),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              LandingConstants.finalCTAButton,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1,
+              ),
+            ),
+            const SizedBox(width: 16),
+            const Icon(Icons.arrow_forward, size: 28),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTrustBadges() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(Icons.lock, color: Colors.white70, size: 16),
+        const SizedBox(width: 8),
+        Text(
+          LandingConstants.finalCTASecureCheckout,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[400],
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(width: 20),
+        const Icon(Icons.verified_user, color: Colors.white70, size: 16),
+        const SizedBox(width: 8),
+        Text(
+          LandingConstants.finalCTAGuarantee,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[400],
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBenefitsGrid() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isWide = constraints.maxWidth > 700;
+        return Wrap(
+          alignment: WrapAlignment.center,
+          spacing: isWide ? 40 : 20,
+          runSpacing: 30,
+          children: LandingConstants.finalCTABenefits
+              .map((benefit) => _buildBenefitItem(benefit.icon, benefit.label))
+              .toList(),
+        );
+      },
+    );
+  }
+
+  Widget _buildSocialProof() {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.1),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              5,
+              (index) => Icon(
+                Icons.star,
+                color: LandingConstants.yellowAccent,
+                size: 32,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            LandingConstants.finalCTARating,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            LandingConstants.finalCTAReviewCount,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[400],
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -222,14 +230,22 @@ class FinalCTASection extends StatelessWidget {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withOpacity(0.05),
             shape: BoxShape.circle,
+            border: Border.all(
+              color: Colors.white.withOpacity(0.1),
+              width: 1,
+            ),
           ),
-          child: Icon(icon, color: Colors.white, size: 24),
+          child: Icon(
+            icon,
+            color: LandingConstants.pinkAccent,
+            size: 32,
+          ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         Text(
           label,
           style: const TextStyle(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'landing_constants.dart';
 
 class TrustBadgesSection extends StatelessWidget {
   const TrustBadgesSection({super.key});
@@ -13,138 +14,105 @@ class TrustBadgesSection extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 1200),
           child: Column(
             children: [
-              const Text(
-                'Shop with Confidence',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 38,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              
+              _buildTitle(),
               const SizedBox(height: 20),
-              
-              Text(
-                'Your satisfaction and security are our top priorities.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey[600],
-                  height: 1.6,
-                ),
-              ),
-              
+              _buildSubtitle(),
               const SizedBox(height: 60),
-              
-              // Trust Badges Grid
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final crossAxisCount = constraints.maxWidth > 900 
-                      ? 4 
-                      : constraints.maxWidth > 600 
-                          ? 2 
-                          : 1;
-                  
-                  return GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: 30,
-                    mainAxisSpacing: 30,
-                    childAspectRatio: 1.0,
-                    children: [
-                      _buildTrustBadge(
-                        Icons.lock,
-                        'Secure Checkout',
-                        '256-bit SSL encryption protects your data',
-                        const Color(0xFF10B981),
-                      ),
-                      _buildTrustBadge(
-                        Icons.local_shipping,
-                        'Free Shipping',
-                        'Fast delivery to your doorstep',
-                        const Color(0xFF3B82F6),
-                      ),
-                      _buildTrustBadge(
-                        Icons.currency_exchange,
-                        '30-Day Returns',
-                        'Full refund if not satisfied',
-                        const Color(0xFFF59E0B),
-                      ),
-                      _buildTrustBadge(
-                        Icons.support_agent,
-                        '24/7 Support',
-                        'Always here to help you',
-                        const Color(0xFF8B5CF6),
-                      ),
-                      _buildTrustBadge(
-                        Icons.verified_user,
-                        'Authentic Products',
-                        '100% genuine guarantee',
-                        const Color(0xFFEF4444),
-                      ),
-                      _buildTrustBadge(
-                        Icons.shield,
-                        'Warranty Included',
-                        '2-year manufacturer warranty',
-                        const Color(0xFF06B6D4),
-                      ),
-                      _buildTrustBadge(
-                        Icons.credit_card,
-                        'Multiple Payments',
-                        'All major cards accepted',
-                        const Color(0xFFEC4899),
-                      ),
-                      _buildTrustBadge(
-                        Icons.eco,
-                        'Eco-Friendly',
-                        'Sustainable materials & packaging',
-                        const Color(0xFF22C55E),
-                      ),
-                    ],
-                  );
-                },
-              ),
-              
+              _buildTrustBadgesGrid(),
               const SizedBox(height: 60),
-              
-              // Bottom stats
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 30),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF8B5CF6), Color(0xFF3B82F6)],
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF8B5CF6).withOpacity(0.3),
-                      blurRadius: 30,
-                      offset: const Offset(0, 15),
-                    ),
-                  ],
-                ),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final isWide = constraints.maxWidth > 700;
-                    return Wrap(
-                      alignment: WrapAlignment.spaceEvenly,
-                      spacing: isWide ? 60 : 30,
-                      runSpacing: 30,
-                      children: [
-                        _buildStatItem('50,000+', 'Happy Customers'),
-                        _buildStatItem('4.9/5', 'Average Rating'),
-                        _buildStatItem('98%', 'Satisfaction Rate'),
-                        _buildStatItem('< 24h', 'Response Time'),
-                      ],
-                    );
-                  },
-                ),
-              ),
+              _buildStatsContainer(),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return Text(
+      LandingConstants.trustTitle,
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        fontSize: 38,
+        fontWeight: FontWeight.w900,
+        letterSpacing: -0.5,
+      ),
+    );
+  }
+
+  Widget _buildSubtitle() {
+    return Text(
+      LandingConstants.trustSubtitle,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 18,
+        color: Colors.grey[600],
+        height: 1.6,
+      ),
+    );
+  }
+
+  Widget _buildTrustBadgesGrid() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final crossAxisCount = constraints.maxWidth > 900 
+            ? 4 
+            : constraints.maxWidth > 600 
+                ? 2 
+                : 1;
+        
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 30,
+            mainAxisSpacing: 30,
+            childAspectRatio: 1.0,
+          ),
+          itemCount: LandingConstants.trustBadges.length,
+          itemBuilder: (context, index) {
+            final badge = LandingConstants.trustBadges[index];
+            return _buildTrustBadge(
+              badge.icon,
+              badge.title,
+              badge.description,
+              badge.color,
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildStatsContainer() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 30),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [LandingConstants.secondaryColor, LandingConstants.blue],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: LandingConstants.secondaryColor.withOpacity(0.3),
+            blurRadius: 30,
+            offset: const Offset(0, 15),
+          ),
+        ],
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWide = constraints.maxWidth > 700;
+          return Wrap(
+            alignment: WrapAlignment.spaceEvenly,
+            spacing: isWide ? 60 : 30,
+            runSpacing: 30,
+            children: LandingConstants.trustStats
+                .map((stat) => _buildStatItem(stat.value, stat.label))
+                .toList(),
+          );
+        },
       ),
     );
   }

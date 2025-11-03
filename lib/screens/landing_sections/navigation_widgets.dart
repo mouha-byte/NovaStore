@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:store_app2025/widgets/nova_store_logo.dart';
+import 'landing_constants.dart';
 
-class NavigationWidgets extends StatelessWidget {
+class NavigationWidgets extends StatefulWidget {
   final bool isScrolled;
   final VoidCallback onBuyNow;
   final VoidCallback onFeaturesClick;
@@ -22,6 +23,41 @@ class NavigationWidgets extends StatelessWidget {
   });
 
   @override
+  State<NavigationWidgets> createState() => _NavigationWidgetsState();
+}
+
+class _NavigationWidgetsState extends State<NavigationWidgets> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 30),
+      vsync: this,
+    );
+    
+    _controller.addListener(() {
+      if (_scrollController.hasClients) {
+        final maxScroll = _scrollController.position.maxScrollExtent;
+        final currentScroll = maxScroll * _controller.value;
+        _scrollController.jumpTo(currentScroll);
+      }
+    });
+    
+    _controller.repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -34,31 +70,58 @@ class NavigationWidgets extends StatelessWidget {
   // ==================== TOP BANNER ====================
   Widget _buildTopBanner() {
     return Container(
-      height: 40,
-      color: const Color(0xFFEF4444),
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.local_fire_department,
-                color: Colors.white, size: 18),
-            const SizedBox(width: 8),
-            Text(
-              '50% OFF - Limited Time Only!',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w900,
-                fontSize: 14,
-                shadows: [
-                  Shadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 4,
-                  ),
-                ],
-              ),
-            ),
-          ],
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ListView.builder(
+        controller: _scrollController,
+        scrollDirection: Axis.horizontal,
+        itemCount: LandingConstants.brandsList.length * 3,
+        itemBuilder: (context, index) {
+          final brand = LandingConstants.brandsList[index % LandingConstants.brandsList.length];
+          return _buildBrandBadge(brand.logo, brand.name);
+        },
+      ),
+    );
+  }
+
+  Widget _buildBrandBadge(String emoji, String text) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF9FAFB),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(
+          color: const Color(0xFFE5E7EB),
+          width: 1,
         ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            emoji,
+            style: const TextStyle(fontSize: 18),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: const TextStyle(
+              color: Color(0xFF374151),
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -70,8 +133,8 @@ class NavigationWidgets extends StatelessWidget {
     return Container(
       height: 70,
       decoration: BoxDecoration(
-        color: isScrolled ? Colors.white : Colors.white.withOpacity(0.95),
-        boxShadow: isScrolled
+        color: widget.isScrolled ? Colors.white : Colors.white.withOpacity(0.95),
+        boxShadow: widget.isScrolled
             ? [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
@@ -132,18 +195,18 @@ class NavigationWidgets extends StatelessWidget {
                 ]
                 // Desktop: Navigation Links + CTA Button
                 else ...[
-                  _buildNavLink('Features', onFeaturesClick),
+                  _buildNavLink('Features', widget.onFeaturesClick),
                   const SizedBox(width: 30),
-                  _buildNavLink('Videos', onVideosClick),
+                  _buildNavLink('Videos', widget.onVideosClick),
                   const SizedBox(width: 30),
-                  _buildNavLink('Reviews', onReviewsClick),
+                  _buildNavLink('Reviews', widget.onReviewsClick),
                   const SizedBox(width: 30),
-                  _buildNavLink('Pricing', onPricingClick),
+                  _buildNavLink('Pricing', widget.onPricingClick),
                   const SizedBox(width: 30),
-                  _buildNavLink('FAQ', onFaqClick),
+                  _buildNavLink('FAQ', widget.onFaqClick),
                   const SizedBox(width: 30),
                   ElevatedButton(
-                    onPressed: onBuyNow,
+                    onPressed: widget.onBuyNow,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFEF4444),
                       foregroundColor: Colors.white,
@@ -221,7 +284,7 @@ class NavigationWidgets extends StatelessWidget {
                 title: 'Features',
                 onTap: () {
                   Navigator.pop(context);
-                  onFeaturesClick();
+                  widget.onFeaturesClick();
                 },
               ),
               _buildMobileMenuItem(
@@ -230,7 +293,7 @@ class NavigationWidgets extends StatelessWidget {
                 title: 'Videos',
                 onTap: () {
                   Navigator.pop(context);
-                  onVideosClick();
+                  widget.onVideosClick();
                 },
               ),
               _buildMobileMenuItem(
@@ -239,7 +302,7 @@ class NavigationWidgets extends StatelessWidget {
                 title: 'Reviews',
                 onTap: () {
                   Navigator.pop(context);
-                  onReviewsClick();
+                  widget.onReviewsClick();
                 },
               ),
               _buildMobileMenuItem(
@@ -248,7 +311,7 @@ class NavigationWidgets extends StatelessWidget {
                 title: 'Pricing',
                 onTap: () {
                   Navigator.pop(context);
-                  onPricingClick();
+                  widget.onPricingClick();
                 },
               ),
               _buildMobileMenuItem(
@@ -257,7 +320,7 @@ class NavigationWidgets extends StatelessWidget {
                 title: 'FAQ',
                 onTap: () {
                   Navigator.pop(context);
-                  onFaqClick();
+                  widget.onFaqClick();
                 },
               ),
 
@@ -272,7 +335,7 @@ class NavigationWidgets extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      onBuyNow();
+                      widget.onBuyNow();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFEF4444),
@@ -411,8 +474,7 @@ class FloatingActionButtons extends StatelessWidget {
                       letterSpacing: 0.5,
                     ),
                   ),
-                  SizedBox(width: 8),
-                  Icon(Icons.arrow_forward, size: 20),
+                 
                 ],
               ),
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'landing_constants.dart';
 
 class PricingSection extends StatelessWidget {
   final VoidCallback onBuyNow;
@@ -11,7 +12,6 @@ class PricingSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 600;
-    final isTablet = MediaQuery.of(context).size.width >= 600 && MediaQuery.of(context).size.width < 900;
     
     return Container(
       padding: EdgeInsets.symmetric(
@@ -24,139 +24,113 @@ class PricingSection extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 1200),
           child: Column(
             children: [
-              // Badge
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: isMobile ? 16 : 24, 
-                  vertical: isMobile ? 8 : 12
-                ),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF10B981), Color(0xFF059669)],
-                  ),
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF10B981).withOpacity(0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.local_offer, color: Colors.white, size: isMobile ? 16 : 20),
-                    SizedBox(width: isMobile ? 6 : 10),
-                    Text(
-                      'PRICING',
-                      style: TextStyle(
-                        fontSize: isMobile ? 12 : 14,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              
+              _buildBadge(isMobile),
               SizedBox(height: isMobile ? 24 : 40),
-              
-              Text(
-                'Choose Your Package',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: isMobile ? 28 : (isTablet ? 36 : 46),
-                  fontWeight: FontWeight.w900,
-                  height: 1.2,
-                  letterSpacing: -1,
-                ),
-              ),
-              
+              _buildTitle(isMobile),
               SizedBox(height: isMobile ? 16 : 30),
-              
-              Text(
-                'All packages come with our 30-day money-back guarantee.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: isMobile ? 14 : (isTablet ? 16 : 20),
-                  color: Colors.grey[600],
-                  height: 1.6,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              
+              _buildSubtitle(isMobile),
               SizedBox(height: isMobile ? 40 : 80),
-              
-              // Pricing Cards
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final crossAxisCount = constraints.maxWidth > 900 
-                      ? 3 
-                      : 1;
-                  
-                  return GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: 30,
-                    mainAxisSpacing: 30,
-                    childAspectRatio: crossAxisCount == 1 ? 1.2 : 0.75,
-                    children: [
-                      _buildPricingCard(
-                        'Starter',
-                        '\$99',
-                        '\$199',
-                        'Perfect for trying it out',
-                        [
-                          '1 Product',
-                          '30-Day Guarantee',
-                          'Basic Accessories',
-                        ],
-                        const Color(0xFF3B82F6),
-                        false,
-                      ),
-                      _buildPricingCard(
-                        'Pro',
-                        '\$149',
-                        '\$299',
-                        'Most Popular Choice',
-                        [
-                          '2 Products',
-                          // 'FREE Express Shipping',
-              
-                          'Premium Accessories',
-                          // 'Bonus Package (\$79 value)',
-                        ],
-                        const Color(0xFF10B981),
-                        true,
-                      ),
-                      _buildPricingCard(
-                        'Ultimate',
-                        '\$249',
-                        '\$499',
-                        'Best Value & Savings',
-                        [
-                          '4 Products',
-                          // 'FREE Express Shipping',
-                          // 'VIP Support 24/7',
-                          '60-Day Guarantee',
-                          'Deluxe Accessories',
-                          // 'Exclusive Bonus (\$149 value)',
-                          // 'Lifetime Updates',
-                        ],
-                        const Color(0xFF8B5CF6),
-                        false,
-                      ),
-                    ],
-                  );
-                },
-              ),
+              _buildPricingCards(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildBadge(bool isMobile) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 16 : 24, 
+        vertical: isMobile ? 8 : 12
+      ),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF10B981), Color(0xFF059669)],
+        ),
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF10B981).withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.local_offer, color: Colors.white, size: isMobile ? 16 : 20),
+          SizedBox(width: isMobile ? 6 : 10),
+          Text(
+            LandingConstants.pricingBadge,
+            style: TextStyle(
+              fontSize: isMobile ? 12 : 14,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              letterSpacing: 2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTitle(bool isMobile) {
+    return Text(
+      LandingConstants.pricingTitle,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: isMobile ? 28 : 46,
+        fontWeight: FontWeight.w900,
+        height: 1.2,
+        letterSpacing: -1,
+      ),
+    );
+  }
+
+  Widget _buildSubtitle(bool isMobile) {
+    return Text(
+      LandingConstants.pricingDescription,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: isMobile ? 14 : 20,
+        color: Colors.grey[600],
+        height: 1.6,
+        fontWeight: FontWeight.w400,
+      ),
+    );
+  }
+
+  Widget _buildPricingCards() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final crossAxisCount = constraints.maxWidth > 900 ? 3 : 1;
+        
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 30,
+            mainAxisSpacing: 30,
+            childAspectRatio: crossAxisCount == 1 ? 1.2 : 0.75,
+          ),
+          itemCount: LandingConstants.pricingPlans.length,
+          itemBuilder: (context, index) {
+            final plan = LandingConstants.pricingPlans[index];
+            return _buildPricingCard(
+              plan.title,
+              plan.price,
+              plan.originalPrice,
+              plan.subtitle,
+              plan.features,
+              plan.color,
+              plan.isPopular,
+            );
+          },
+        );
+      },
     );
   }
 
@@ -219,7 +193,7 @@ class PricingSection extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          '⭐ MOST POPULAR',
+                          '⭐ LE PLUS POPULAIRE',
                           style: TextStyle(
                             fontSize: isMobile ? 10 : 12,
                             fontWeight: FontWeight.w900,
@@ -264,7 +238,7 @@ class PricingSection extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '\$',
+                          '€',
                           style: TextStyle(
                             fontSize: isMobile ? 20 : 24,
                             fontWeight: FontWeight.w900,
@@ -272,7 +246,7 @@ class PricingSection extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          price.replaceAll('\$', ''),
+                          price,
                           style: TextStyle(
                             fontSize: isMobile ? 48 : 56,
                             fontWeight: FontWeight.w900,
@@ -284,7 +258,7 @@ class PricingSection extends StatelessWidget {
                     ),
                     SizedBox(height: isMobile ? 6 : 8),
                     Text(
-                      originalPrice,
+                      '€$originalPrice',
                       style: TextStyle(
                         fontSize: isMobile ? 16 : 18,
                         fontWeight: FontWeight.w700,
@@ -304,7 +278,7 @@ class PricingSection extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        'Save ${((1 - double.parse(price.replaceAll('\$', '')) / double.parse(originalPrice.replaceAll('\$', ''))) * 100).round()}%',
+                        'Économisez ${((1 - double.parse(price) / double.parse(originalPrice)) * 100).round()}%',
                         style: TextStyle(
                           fontSize: isMobile ? 12 : 14,
                           fontWeight: FontWeight.w900,
@@ -365,7 +339,7 @@ class PricingSection extends StatelessWidget {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        'Get $title',
+                        'Choisir $title',
                         style: TextStyle(
                           fontSize: isMobile ? 14 : 16,
                           fontWeight: FontWeight.w900,

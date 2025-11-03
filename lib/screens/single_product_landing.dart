@@ -8,7 +8,6 @@ import 'landing_sections/problem_solution_sections.dart';
 import 'landing_sections/features_section.dart';
 import 'landing_sections/videos_section.dart';
 import 'landing_sections/how_it_works_section.dart';
-import 'landing_sections/brands_section.dart';
 import 'landing_sections/experts_section.dart';
 import 'landing_sections/lifestyle_section.dart';
 import 'landing_sections/testimonials_section.dart';
@@ -17,7 +16,7 @@ import 'landing_sections/manufacturing_section.dart';
 import 'landing_sections/trust_badges_section.dart';
 import 'landing_sections/comparison_section.dart';
 import 'landing_sections/before_after_section.dart';
-import 'landing_sections/limited_offer_section.dart';
+import 'landing_sections/floating_offer_button.dart';
 import 'landing_sections/pricing_section.dart';
 import 'landing_sections/faq_section.dart';
 import 'landing_sections/final_cta_section.dart';
@@ -176,19 +175,13 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
             child: Column(
               children: [
                 // Space for navigation
-                const SizedBox(height: 110),
+                const SizedBox(height: 120),
                 
                 // Hero Section
                 HeroSection(
                   product: widget.product,
                   onBuyNow: _handleBuyNow,
                 ),
-                const SizedBox(height: 40),
-                LimitedOfferSection(
-                  timeRemaining: _timeRemaining,
-                  onBuyNow: _handleBuyNow,
-                ),
-                
                 
                 // Problem & Solution Sections
                 const ProblemSolutionSections(),
@@ -207,9 +200,6 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                 
                 // How It Works Section
                 const HowItWorksSection(),
-                
-                // Brands Section
-                const BrandsSection(),
                 
                 // Experts Section
                 const ExpertsSection(),
@@ -294,6 +284,12 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                 child: const Icon(Icons.arrow_upward),
               ),
             ),
+          
+          // Floating Offer Button (Bottom Left)
+          FloatingOfferButton(
+            timeRemaining: _timeRemaining,
+            onTap: _handleBuyNow,
+          ),
           
           // Floating Action Buttons
           FloatingActionButtons(
