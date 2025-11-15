@@ -40,7 +40,7 @@ class _AppInitializerState extends State<AppInitializer> {
 
   Future<void> _initializeApp() async {
     // Wait for Firebase and Firestore initialization
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 500)) ;
     
     if (!mounted) return;
     
