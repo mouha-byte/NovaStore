@@ -10,8 +10,6 @@ import 'services/auth_service.dart';
 import 'services/firestore_service.dart';
 import 'services/theme_service.dart';
 
-import 'screens/splash_screen_simple.dart';
-
 import 'screens/checkout_screen_modern.dart';
 
 import 'screens/static pages/privacy_policy_screen.dart';
@@ -24,6 +22,135 @@ import 'screens/static pages/payment_status_screen.dart';
 
 import 'models/product_model.dart';
 import 'utils/app_theme.dart';
+
+// Simple App Initializer Widget
+class AppInitializer extends StatefulWidget {
+  const AppInitializer({super.key});
+
+  @override
+  State<AppInitializer> createState() => _AppInitializerState();
+}
+
+class _AppInitializerState extends State<AppInitializer> {
+  @override
+  void initState() {
+    super.initState();
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    // Wait for Firebase and Firestore initialization
+    await Future.delayed(const Duration(milliseconds: 500));
+    
+    if (!mounted) return;
+    
+    final firestoreService = Provider.of<FirestoreService>(context, listen: false);
+    
+    try {
+      final products = await firestoreService.getProducts().first;
+      
+      if (products.isNotEmpty && mounted) {
+        Navigator.pushReplacementNamed(
+          context,
+          '/landing',
+          arguments: products.first,
+        );
+      }
+    } catch (e) {
+      // If error, still navigate with a default product
+      if (mounted) {
+        Navigator.pushReplacementNamed(
+          context,
+          '/landing',
+          arguments: ProductModel(
+            id: 'default',
+            title: 'Mini Mixeur Bouteille USB Portable 380ml',
+            subtitle: 'Rechargeable USB - Parfait pour smoothies',
+            description: 'Mixeur portable rechargeable USB avec lames en acier inoxydable',
+            price: 23.0,
+            compareAtPrice: 46.0,
+            discountPercentage: 50,
+            images: [],
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Professional loading animation
+            Container(
+              width: 60,
+              height: 60,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 20,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  const Color(0xFF8B5CF6),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Animated dots
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildDot(0),
+                const SizedBox(width: 8),
+                _buildDot(1),
+                const SizedBox(width: 8),
+                _buildDot(2),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildDot(int index) {
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0.0, end: 1.0),
+      duration: const Duration(milliseconds: 800),
+      builder: (context, double value, child) {
+        final delay = index * 0.2;
+        final adjustedValue = (value - delay).clamp(0.0, 1.0);
+        final opacity = (adjustedValue * 2).clamp(0.0, 1.0);
+        return Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: const Color(0xFF8B5CF6).withOpacity(opacity),
+            shape: BoxShape.circle,
+          ),
+        );
+      },
+      onEnd: () {
+        if (mounted) {
+          setState(() {});
+        }
+      },
+    );
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,7 +190,7 @@ class MyApp extends StatelessWidget {
               switch (settings.name) {
                 case '/':
                   return MaterialPageRoute(
-                    builder: (_) => const SplashScreen(),
+                    builder: (_) => const AppInitializer(),
                   );
 
                 case '/landing':
@@ -112,6 +239,8 @@ class MyApp extends StatelessWidget {
                   return MaterialPageRoute(
                     builder: (_) => const PaymentStatusScreen(),
                   );
+                default:
+                  return null;
               }
             },
           );

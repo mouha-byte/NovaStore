@@ -42,6 +42,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
   final _chatController = TextEditingController();
   bool _isScrolled = false;
   bool _showScrollToTop = false;
+  bool _isImagesLoaded = false;
   
   // Section keys for navigation
   final GlobalKey _featuresKey = GlobalKey();
@@ -85,6 +86,36 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
     
     // Update countdown every second
     _startCountdownTimer();
+    
+    // Preload critical images
+    _preloadImages();
+  }
+  
+  Future<void> _preloadImages() async {
+    // Import images from landing_constants
+    const imagesToPreload = [
+      'https://images.pexels.com/photos/5945805/pexels-photo-5945805.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&dpr=1',
+      'https://images.pexels.com/photos/3590401/pexels-photo-3590401.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&dpr=1',
+      'https://images.pexels.com/photos/2872755/pexels-photo-2872755.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&dpr=1',
+    ];
+    
+    try {
+      for (final imageUrl in imagesToPreload) {
+        await precacheImage(NetworkImage(imageUrl), context);
+      }
+      if (mounted) {
+        setState(() {
+          _isImagesLoaded = true;
+        });
+      }
+    } catch (e) {
+      // If preloading fails, continue anyway
+      if (mounted) {
+        setState(() {
+          _isImagesLoaded = true;
+        });
+      }
+    }
   }
   
   void _startCountdownTimer() {
@@ -166,6 +197,78 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
 
   @override
   Widget build(BuildContext context) {
+    // Show loading indicator while images are preloading
+    if (!_isImagesLoaded) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Professional shimmer loading
+              Container(
+                width: 60,
+                height: 60,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 20,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    const Color(0xFF8B5CF6),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              // Animated loading dots
+              TweenAnimationBuilder(
+                tween: Tween<double>(begin: 0.0, end: 1.0),
+                duration: const Duration(milliseconds: 1500),
+                builder: (context, double value, child) {
+                  return Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(3, (index) {
+                      final delay = index * 0.2;
+                      final adjustedValue = ((value - delay) % 1.0).clamp(0.0, 1.0);
+                      final scale = 0.5 + (adjustedValue * 0.5);
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Transform.scale(
+                          scale: scale,
+                          child: Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF8B5CF6).withOpacity(adjustedValue),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  );
+                },
+                onEnd: () {
+                  if (mounted) {
+                    setState(() {});
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    
     return Scaffold(
       body: Stack(
         children: [
