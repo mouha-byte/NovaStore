@@ -189,7 +189,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                   const SizedBox(height: 16),
                   
                   Text(
-                    'AI-Powered Shopping Experience',
+                    'AI-Powered Shopping Experience ',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
