@@ -222,7 +222,7 @@ class _PaymentStatusScreenState extends State<PaymentStatusScreen> {
 
                 if (!_isProcessing)
                   const Text(
-                    'Redirecting you shortly...',
+                    'Redirecting you shortly... ',
                     style: TextStyle(
                       fontSize: 14,
                       color: Color(0xFF8B5CF6),
