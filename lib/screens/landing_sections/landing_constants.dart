@@ -280,7 +280,7 @@ class LandingConstants {
   static const List<PricingPlan> pricingPlans = [
     PricingPlan(
       title: 'Solo',
-      price: '23',
+      price: '27.99',
       originalPrice: '46',
       subtitle: 'Parfait pour essayer',
       features: [
@@ -293,7 +293,7 @@ class LandingConstants {
     ),
     PricingPlan(
       title: 'Duo',
-      price: '39',
+      price: '52.99',
       originalPrice: '92',
       subtitle: 'Le Plus Populaire',
       features: [
@@ -307,7 +307,7 @@ class LandingConstants {
     ),
     PricingPlan(
       title: 'Famille',
-      price: '69',
+      price: '109.99',
       originalPrice: '184',
       subtitle: 'Meilleure Économie',
       features: [
