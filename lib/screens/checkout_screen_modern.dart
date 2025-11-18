@@ -29,6 +29,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _cityController = TextEditingController();
   final _zipController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
 
   String _paymentMethod = 'wallet'; // 'wallet' or 'payeer'
   bool _isProcessing = false;
@@ -39,6 +40,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     _cityController.dispose();
     _zipController.dispose();
     _phoneController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -233,17 +235,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         TextFormField(
           controller: _phoneController,
           decoration: const InputDecoration(
-            labelText: 'Phone Number',
+            labelText: 'Phone Number (Optional)',
             prefixIcon: Icon(Icons.phone_outlined),
           ),
           keyboardType: TextInputType.phone,
-          // validator: (value) {
-          //   if (value == null || value.isEmpty) {
-          //     return 'Please enter your phone number';
-          //   }
-          //   return null;
-          // },
         ).animate().fadeIn(delay: 400.ms).slideX(),
+        
+        const SizedBox(height: AppSpacing.md),
+        
+        TextFormField(
+          controller: _emailController,
+          decoration: const InputDecoration(
+            labelText: 'Email (Optional)',
+            prefixIcon: Icon(Icons.email_outlined),
+          ),
+          keyboardType: TextInputType.emailAddress,
+        ).animate().fadeIn(delay: 500.ms).slideX(),
       ],
     );
   }
@@ -467,25 +474,46 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     setState(() => _isProcessing = true);
 
     try {
+      final firestoreService = Provider.of<FirestoreService>(context, listen: false);
+      
+      // Prepare shipping info to save in Firebase
+      final shippingInfo = {
+        'address': _addressController.text.trim(),
+        'city': _cityController.text.trim(),
+        'zip': _zipController.text.trim(),
+        'phone': _phoneController.text.trim(),
+        'email': _emailController.text.trim(),
+        'updatedAt': DateTime.now().toIso8601String(),
+      };
+      
+      // Save shipping info to Firebase
+      if (user != null) {
+        await firestoreService.updateUserShippingInfo(user.id, shippingInfo);
+      } else {
+        // For guest users, create a guest order document
+        await firestoreService.createGuestOrder({
+          ...shippingInfo,
+          'productId': widget.product.id,
+          'productTitle': widget.product.title,
+          'totalPrice': _totalPrice,
+          'createdAt': DateTime.now().toIso8601String(),
+        });
+      }
+      
       // Prepare order data
       final orderData = {
-        'userId': user?.id ?? '15',
+        'userId': user?.id ?? 'guest',
         'productId': widget.product.id,
         'productTitle': widget.product.title,
-        'productImage': widget.product.images.first,
+        'productImage': widget.product.images.isNotEmpty ? widget.product.images.first : '',
         'variantId': widget.variant?.variantId,
         'variantTitle': widget.variant?.title,
-        'totalPrice': 15.0,
+        'totalPrice': _totalPrice,
         'productPrice': _productPrice,
         'shippingCost': _shippingCost,
-        'shippingAddress': {
-          'address': _addressController.text.trim(),
-          'city': _cityController.text.trim(),
-          'zip': _zipController.text.trim(),
-          'phone': _phoneController.text.trim(),
-        },
+        'shippingAddress': shippingInfo,
         'paymentMethod': _paymentMethod,
-        'walletBalance': user?.walletBalance ?? 16.0,
+        'walletBalance': user?.walletBalance ?? 0.0,
       };
 
       // Navigate to payment screen

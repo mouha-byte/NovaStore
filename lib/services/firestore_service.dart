@@ -152,4 +152,20 @@ class FirestoreService {
       'updatedAt': Timestamp.now(),
     });
   }
+
+  // ===== SHIPPING INFO =====
+  Future<void> updateUserShippingInfo(String userId, Map<String, dynamic> shippingInfo) async {
+    await _db.collection('users').doc(userId).update({
+      'shippingInfo': shippingInfo,
+      'updatedAt': Timestamp.now(),
+    });
+  }
+
+  Future<String> createGuestOrder(Map<String, dynamic> orderData) async {
+    final docRef = await _db.collection('guest_orders').add({
+      ...orderData,
+      'createdAt': Timestamp.now(),
+    });
+    return docRef.id;
+  }
 }
