@@ -100,8 +100,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           // Product image
           ClipRRect(
             borderRadius: AppRadius.circular8,
-            child: Image.network(
-              widget.product.images.first,
+            child: Image.asset(
+              "assets/product_image.png",
               width: 80,
               height: 80,
               fit: BoxFit.cover,
@@ -237,12 +237,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             prefixIcon: Icon(Icons.phone_outlined),
           ),
           keyboardType: TextInputType.phone,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter your phone number';
-            }
-            return null;
-          },
+          // validator: (value) {
+          //   if (value == null || value.isEmpty) {
+          //     return 'Please enter your phone number';
+          //   }
+          //   return null;
+          // },
         ).animate().fadeIn(delay: 400.ms).slideX(),
       ],
     );
@@ -368,7 +368,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Pay with Payeer',
+                        'Pay with Cart',
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
@@ -459,96 +459,42 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   // PROCESS ORDER
   // =========================
   Future<void> _processOrder() async {
-    // if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
 
     final authService = Provider.of<AuthService>(context, listen: false);
     final user = authService.currentUser;
 
-    // Check if user is logged in
-    // if (user == null) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text('Please login to place an order'),
-    //       backgroundColor: AppColors.error,
-    //     ),
-    //   );
-    //   Navigator.pushNamed(context, '/login');
-    //   return;
-    // }
-
-    // Check wallet balance if paying with wallet
-    // if (_paymentMethod == 'wallet' && user.walletBalance < _totalPrice) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text('Insufficient wallet balance. Please add funds.'),
-    //       backgroundColor: AppColors.error,
-    //     ),
-    //   );
-    //   return;
-    // }
-
     setState(() => _isProcessing = true);
 
     try {
-      final firestoreService = Provider.of<FirestoreService>(context, listen: false);
+      // Prepare order data
+      final orderData = {
+        'userId': user?.id ?? '15',
+        'productId': widget.product.id,
+        'productTitle': widget.product.title,
+        'productImage': widget.product.images.first,
+        'variantId': widget.variant?.variantId,
+        'variantTitle': widget.variant?.title,
+        'totalPrice': 15.0,
+        'productPrice': _productPrice,
+        'shippingCost': _shippingCost,
+        'shippingAddress': {
+          'address': _addressController.text.trim(),
+          'city': _cityController.text.trim(),
+          'zip': _zipController.text.trim(),
+          'phone': _phoneController.text.trim(),
+        },
+        'paymentMethod': _paymentMethod,
+        'walletBalance': user?.walletBalance ?? 16.0,
+      };
 
-      if (_paymentMethod == 'wallet') {
-        // Create order with wallet payment
-        final order = OrderModel(
-          id: '',
-          // userId: user.id,
-                    userId: "15",
-
-          productId: widget.product.id,
-          variantId: widget.variant?.variantId,
-          totalPrice: _totalPrice,
-          status: 'pending',
-          shippingAddress: {
-            'address': _addressController.text.trim(),
-            'city': _cityController.text.trim(),
-            'zip': _zipController.text.trim(),
-            'phone': _phoneController.text.trim(),
-          },
-          createdAt: DateTime.now(),
+      // Navigate to payment screen
+      if (mounted) {
+        Navigator.pushNamed(
+          context,
+          '/payment',
+          arguments: orderData,
         );
-        
-        final orderId = await firestoreService.createOrder(order);
-
-        // Deduct from wallet
-        await firestoreService.updateUserBalance(
-          // user.id,
-          '15',
-          // user.walletBalance - _totalPrice,
-          1000.0 - _totalPrice,
-        );
-
-        // Refresh user data
-        await authService.refreshUserData();
-
-        if (mounted) {
-          Navigator.pushReplacementNamed(
-            context,
-            '/order-confirmation',
-            arguments: orderId,
-          );
-        }
-      } else {
-        // Payeer payment
-        final payeerUrl = _generatePayeerUrl();
-        if (await canLaunchUrl(Uri.parse(payeerUrl))) {
-          await launchUrl(Uri.parse(payeerUrl), mode: LaunchMode.externalApplication);
-          
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Redirecting to Payeer...'),
-                backgroundColor: AppColors.info,
-              ),
-            );
-          }
-        } else {
-          throw Exception('Could not launch Payeer');
-        }
       }
     } catch (e) {
       if (mounted) {

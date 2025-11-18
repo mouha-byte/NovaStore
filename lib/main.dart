@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:store_app2025/screens/payment.dart';
 import 'package:store_app2025/screens/single_product_landing.dart';
 
 import 'firebase_options.dart';
@@ -53,7 +54,7 @@ class _AppInitializerState extends State<AppInitializer> {
         Navigator.pushReplacementNamed(
           context,
           '/landing',
-          arguments: products.first,
+          arguments: products.first, 
         );
       }
     } catch (e) {
@@ -216,6 +217,11 @@ class MyApp extends StatelessWidget {
                   return MaterialPageRoute(
                     builder: (_) => const TermsOfServiceScreen(),
                   );
+
+                  case '/payment':
+                  return MaterialPageRoute(
+                    builder: (_) => const PaymentScreen(),
+                  );
                 case '/cookies':
                   return MaterialPageRoute(
                     builder: (_) => const CookiePolicyScreen(),
@@ -229,6 +235,8 @@ class MyApp extends StatelessWidget {
                   return MaterialPageRoute(
                     builder: (_) => const PaymentSuccessScreen(),
                   );
+
+
                 case '/fail':
                 case '/payment-failed':
                   return MaterialPageRoute(
