@@ -5,22 +5,14 @@ import 'landing_constants.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
 class VideosSection extends StatelessWidget {
-  const VideosSection({super.key});
+  final bool shouldPlay;
 
-void _openVideoDialog(BuildContext context, String videoUrl, String title) {
-  showDialog(
-    context: context,
-    builder: (context) => Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.all(20),
-      child: _VideoPlayerDialog(videoUrl: videoUrl, title: title),
-    ),
-  );
-}
+  const VideosSection({
+    super.key,
+    this.shouldPlay = false,
+  });
 
-
-
- @override
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 120, horizontal: 40),
@@ -132,91 +124,237 @@ void _openVideoDialog(BuildContext context, String videoUrl, String title) {
           itemCount: LandingConstants.videoItems.length,
           itemBuilder: (context, index) {
             final video = LandingConstants.videoItems[index];
-            return _buildVideoCard(
-              video.title,
-              video.views,
-              video.thumbnailUrl,
-              video.duration,
-              video.videoUrl,
+            return VideoCard(
+              video: video,
+              shouldPlay: shouldPlay,
             );
           },
         );
       },
     );
   }
+}
 
-  Widget _buildVideoCard(String title, String views, String thumbnailUrl, Duration duration, String videoUrl) {
-    final minutes = duration.inMinutes;
-    final seconds = duration.inSeconds.remainder(60);
+class VideoCard extends StatefulWidget {
+  final VideoItem video;
+  final bool shouldPlay;
+
+  const VideoCard({
+    super.key,
+    required this.video,
+    required this.shouldPlay,
+  });
+
+  @override
+  State<VideoCard> createState() => _VideoCardState();
+}
+
+class _VideoCardState extends State<VideoCard> {
+  late VideoPlayerController _controller;
+  bool _isInitialized = false;
+  bool _isMuted = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeController();
+  }
+
+  Future<void> _initializeController() async {
+    _controller = VideoPlayerController.asset(widget.video.videoUrl);
+    try {
+      await _controller.initialize();
+      _controller.setLooping(true);
+      _controller.setVolume(0); // Start muted for autoplay
+      if (mounted) {
+        setState(() {
+          _isInitialized = true;
+        });
+        if (widget.shouldPlay) {
+          _controller.play();
+        }
+      }
+    } catch (e) {
+      debugPrint('Error initializing video: $e');
+    }
+  }
+
+  @override
+  void didUpdateWidget(VideoCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.shouldPlay != oldWidget.shouldPlay && _isInitialized) {
+      if (widget.shouldPlay) {
+        _controller.play();
+      } else {
+        _controller.pause();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _toggleMute() {
+    setState(() {
+      _isMuted = !_isMuted;
+      _controller.setVolume(_isMuted ? 0 : 1);
+    });
+  }
+
+  void _togglePlay() {
+    setState(() {
+      if (_controller.value.isPlaying) {
+        _controller.pause();
+      } else {
+        _controller.play();
+      }
+    });
+  }
+
+  void _enterFullScreen() {
+    _controller.pause();
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => _FullScreenVideoPlayer(
+          videoUrl: widget.video.videoUrl,
+          initialPosition: _controller.value.position,
+        ),
+      ),
+    ).then((_) {
+      // Resume when coming back if it was playing or should play
+      if (widget.shouldPlay) {
+        _controller.play();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final minutes = widget.video.duration.inMinutes;
+    final seconds = widget.video.duration.inSeconds.remainder(60);
     final durationText = '$minutes:${seconds.toString().padLeft(2, '0')}';
-    
-    return Builder(
-      builder: (context) => InkWell(
-        onTap: () => _openVideoDialog(context, videoUrl, title),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.15),
-                blurRadius: 30,
-                offset: const Offset(0, 15),
-              ),
-            ],
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 30,
+            offset: const Offset(0, 15),
           ),
-          child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Image.network(
-                  thumbnailUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[300],
-                      child: const Center(
-                        child: Icon(Icons.videocam, size: 64, color: Colors.grey),
-                      ),
-                    );
-                  },
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Video Player or Thumbnail
+            if (_isInitialized)
+              GestureDetector(
+                onTap: _togglePlay,
+                child: VideoPlayer(_controller),
+              )
+            else
+              Image.network(
+                widget.video.thumbnailUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey[300],
+                    child: const Center(
+                      child: Icon(Icons.videocam, size: 64, color: Colors.grey),
+                    ),
+                  );
+                },
+              ),
+
+            // Overlay Gradient
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.6),
+                    ],
+                  ),
                 ),
               ),
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black.withOpacity(0.7),
-                      ],
+            ),
+
+            // Controls
+            if (_isInitialized) ...[
+              // Top Controls (Mute & Fullscreen)
+              Positioned(
+                top: 16,
+                right: 16,
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: _toggleMute,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          _isMuted ? Icons.volume_off : Icons.volume_up,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: _enterFullScreen,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.fullscreen,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Center Play/Pause Button
+              Center(
+                child: GestureDetector(
+                  onTap: _togglePlay,
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    child: Icon(
+                      _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                      color: Colors.white,
+                      size: 40,
                     ),
                   ),
                 ),
               ),
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: LandingConstants.pinkAccent,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: LandingConstants.pinkAccent.withOpacity(0.5),
-                        blurRadius: 30,
-                        spreadRadius: 10,
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.play_arrow,
-                    color: Colors.white,
-                    size: 48,
-                  ),
-                ),
-              ),
+            ],
+
+            // Duration Badge (only if not initialized)
+            if (!_isInitialized)
               Positioned(
                 top: 16,
                 right: 16,
@@ -236,71 +374,76 @@ void _openVideoDialog(BuildContext context, String videoUrl, String title) {
                   ),
                 ),
               ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                        ),
+
+            // Info Overlay
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.video.title,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
                       ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(Icons.visibility, color: Colors.white70, size: 16),
-                          const SizedBox(width: 6),
-                          Text(
-                            views,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w600,
-                            ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Icon(Icons.visibility, color: Colors.white70, size: 16),
+                        const SizedBox(width: 6),
+                        Text(
+                          widget.video.views,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.white70,
+                            fontWeight: FontWeight.w600,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
       ),
     );
   }
 }
 
-class _VideoPlayerDialog extends StatefulWidget {
+class _FullScreenVideoPlayer extends StatefulWidget {
   final String videoUrl;
-  final String title;
+  final Duration initialPosition;
 
-  const _VideoPlayerDialog({required this.videoUrl, required this.title});
+  const _FullScreenVideoPlayer({
+    required this.videoUrl,
+    required this.initialPosition,
+  });
 
   @override
-  State<_VideoPlayerDialog> createState() => _VideoPlayerDialogState();
+  State<_FullScreenVideoPlayer> createState() => _FullScreenVideoPlayerState();
 }
 
-class _VideoPlayerDialogState extends State<_VideoPlayerDialog> {
+class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
   late VideoPlayerController _controller;
+  bool _showControls = true;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(widget.videoUrl)
+    _controller = VideoPlayerController.asset(widget.videoUrl)
       ..initialize().then((_) {
+        _controller.seekTo(widget.initialPosition);
+        _controller.play();
         setState(() {});
-        _controller.play(); // 🔹 Lecture automatique
       });
   }
 
@@ -312,62 +455,64 @@ class _VideoPlayerDialogState extends State<_VideoPlayerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 900, maxHeight: 600),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Header
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.deepPurple,
-                  Colors.purpleAccent,
-                ],
-              ),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: GestureDetector(
+        onTap: () => setState(() => _showControls = !_showControls),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Center(
+              child: _controller.value.isInitialized
+                  ? AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller),
+                    )
+                  : const CircularProgressIndicator(color: Colors.white),
             ),
-            child: Row(
-              children: [
-                const Icon(Icons.play_circle, color: Colors.white, size: 24),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    widget.title,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                    ),
+            if (_showControls) ...[
+              // Close Button
+              Positioned(
+                top: 40,
+                left: 20,
+                child: IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+              // Play/Pause Button
+              Center(
+                child: IconButton(
+                  icon: Icon(
+                    _controller.value.isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
+                    color: Colors.white,
+                    size: 80,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _controller.value.isPlaying ? _controller.pause() : _controller.play();
+                    });
+                  },
+                ),
+              ),
+              // Progress Bar
+              Positioned(
+                bottom: 40,
+                left: 20,
+                right: 20,
+                child: VideoProgressIndicator(
+                  _controller,
+                  allowScrubbing: true,
+                  colors: VideoProgressColors(
+                    playedColor: LandingConstants.primaryColor,
+                    bufferedColor: Colors.white24,
+                    backgroundColor: Colors.grey,
                   ),
                 ),
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close, color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-
-          // 🔹 Vidéo intégrée directement
-          Expanded(
-            child: _controller.value.isInitialized
-                ? AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: VideoPlayer(_controller),
-                  )
-                : const Center(child: CircularProgressIndicator()),
-          ),
-        ],
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

@@ -18,6 +18,7 @@ import 'landing_sections/comparison_section.dart';
 import 'landing_sections/before_after_section.dart';
 import 'landing_sections/floating_offer_button.dart';
 import 'landing_sections/pricing_section.dart';
+import 'landing_sections/landing_constants.dart';
 import 'landing_sections/faq_section.dart';
 import 'landing_sections/final_cta_section.dart';
 import 'landing_sections/footer_section.dart';
@@ -58,6 +59,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
   // AI Chatbot visibility
   bool _showChatbot = false;
   bool _showQuickReplies = true;
+  bool _isVideoSectionVisible = false;
   
   // Chat messages
   final List<Map<String, dynamic>> _chatMessages = [
@@ -80,8 +82,8 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
     super.initState();
     _scrollController.addListener(_handleScroll);
     
-    // Set offer end time to 24 hours from now
-    _offerEndTime = DateTime.now().add(const Duration(hours: 24));
+    // Set offer end time synchronized for all users (48h cycles)
+    _offerEndTime = _calculateNextCycleEndTime();
     _updateCountdown();
     
     // Update countdown every second
@@ -89,6 +91,28 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
     
     // Preload critical images
     _preloadImages();
+  }
+  
+  DateTime _calculateNextCycleEndTime() {
+    // Use a fixed reference date (e.g., Jan 1, 2024 UTC)
+    final epoch = DateTime.utc(2024, 1, 1);
+    final now = DateTime.now().toUtc();
+    const cycleDuration = Duration(hours: 48);
+    
+    final difference = now.difference(epoch);
+    final cyclesPassed = (difference.inMilliseconds / cycleDuration.inMilliseconds).ceil();
+    
+    // Calculate the end of the current cycle
+    // If we are exactly on the boundary, we want the next cycle, so we ensure we are looking forward
+    // But ceil handles the "current segment" logic correctly for "end time".
+    // If difference is 0, cyclesPassed is 0. We want next cycle.
+    // Actually if difference is 0, we are at start. End is +48h.
+    // If difference is 1ms, cyclesPassed is 1. End is +48h.
+    
+    // Handle edge case where we might be exactly at the start
+    final nextCycleIndex = cyclesPassed <= 0 ? 1 : cyclesPassed;
+    
+    return epoch.add(cycleDuration * nextCycleIndex).toLocal();
   }
   
   Future<void> _preloadImages() async {
@@ -129,12 +153,12 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
   void _updateCountdown() {
     if (!mounted) return;
     setState(() {
-      _timeRemaining = _offerEndTime.difference(DateTime.now());
-      if (_timeRemaining.isNegative) {
-        // Reset to 24 hours when timer expires
-        _offerEndTime = DateTime.now().add(const Duration(hours: 24));
-        _timeRemaining = _offerEndTime.difference(DateTime.now());
+      final now = DateTime.now();
+      // If the offer has ended, recalculate the next cycle
+      if (now.isAfter(_offerEndTime)) {
+        _offerEndTime = _calculateNextCycleEndTime();
       }
+      _timeRemaining = _offerEndTime.difference(now);
     });
   }
 
@@ -155,6 +179,26 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
         _isScrolled = newScrolled;
         _showScrollToTop = showScrollTop;
       });
+    }
+
+    // Check video section visibility
+    if (_videosKey.currentContext != null) {
+      final RenderBox renderBox = _videosKey.currentContext!.findRenderObject() as RenderBox;
+      final position = renderBox.localToGlobal(Offset.zero);
+      final screenHeight = MediaQuery.of(context).size.height;
+      
+      final top = position.dy;
+      final bottom = top + renderBox.size.height;
+      final center = (top + bottom) / 2;
+      
+      // Consider visible if the center of the section is within the screen
+      final isVisible = center > 0 && center < screenHeight;
+      
+      if (isVisible != _isVideoSectionVisible) {
+        setState(() {
+          _isVideoSectionVisible = isVisible;
+        });
+      }
     }
   }
 
@@ -185,6 +229,26 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
       arguments: {
         'product': widget.product,
         'variant': null,
+      },
+    );
+  }
+
+  void _handlePlanSelection(PricingPlan plan) {
+    // Create a temporary variant based on the plan
+    final variant = ProductVariant(
+      variantId: 'plan_${plan.title.toLowerCase()}',
+      title: plan.title,
+      sku: 'PLAN-${plan.title.toUpperCase()}',
+      stock: 999,
+      price: double.tryParse(plan.price) ?? 0.0,
+    );
+
+    Navigator.pushNamed(
+      context,
+      '/checkout',
+      arguments: {
+        'product': widget.product,
+        'variant': variant,
       },
     );
   }
@@ -298,7 +362,9 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                 // Videos Section
                 Container(
                   key: _videosKey,
-                  child: const VideosSection(),
+                  child: VideosSection(
+                    shouldPlay: _isVideoSectionVisible,
+                  ),
                 ),
                 
                 // How It Works Section
@@ -337,7 +403,7 @@ class _SingleProductLandingState extends State<SingleProductLanding> {
                 Container(
                   key: _pricingKey,
                   child: PricingSection(
-                    onBuyNow: _handleBuyNow,
+                    onPlanSelected: _handlePlanSelection,
                   ),
                 ),
                 

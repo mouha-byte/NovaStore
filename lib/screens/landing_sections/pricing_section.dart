@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'landing_constants.dart';
 
 class PricingSection extends StatelessWidget {
-  final VoidCallback onBuyNow;
+  final Function(PricingPlan) onPlanSelected;
 
   const PricingSection({
     super.key,
-    required this.onBuyNow,
+    required this.onPlanSelected,
   });
 
   @override
@@ -119,30 +119,14 @@ class PricingSection extends StatelessWidget {
           itemCount: LandingConstants.pricingPlans.length,
           itemBuilder: (context, index) {
             final plan = LandingConstants.pricingPlans[index];
-            return _buildPricingCard(
-              plan.title,
-              plan.price,
-              plan.originalPrice,
-              plan.subtitle,
-              plan.features,
-              plan.color,
-              plan.isPopular,
-            );
+            return _buildPricingCard(plan);
           },
         );
       },
     );
   }
 
-  Widget _buildPricingCard(
-    String title,
-    String price,
-    String originalPrice,
-    String subtitle,
-    List<String> features,
-    Color color,
-    bool isPopular,
-  ) {
+  Widget _buildPricingCard(PricingPlan plan) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isMobile = constraints.maxWidth < 500;
@@ -152,14 +136,14 @@ class PricingSection extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(isMobile ? 20 : 24),
             border: Border.all(
-              color: isPopular ? color : color.withOpacity(0.2),
-              width: isPopular ? 4 : 2,
+              color: plan.isPopular ? plan.color : plan.color.withOpacity(0.2),
+              width: plan.isPopular ? 4 : 2,
             ),
             boxShadow: [
               BoxShadow(
-                color: color.withOpacity(isPopular ? 0.3 : 0.15),
-                blurRadius: isPopular ? 40 : 30,
-                offset: Offset(0, isPopular ? 15 : 10),
+                color: plan.color.withOpacity(plan.isPopular ? 0.3 : 0.15),
+                blurRadius: plan.isPopular ? 40 : 30,
+                offset: Offset(0, plan.isPopular ? 15 : 10),
               ),
             ],
           ),
@@ -173,7 +157,7 @@ class PricingSection extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [color, color.withOpacity(0.8)],
+                    colors: [plan.color, plan.color.withOpacity(0.8)],
                   ),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(isMobile ? 18 : 22),
@@ -182,7 +166,7 @@ class PricingSection extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    if (isPopular)
+                    if (plan.isPopular)
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: isMobile ? 12 : 16, 
@@ -202,9 +186,9 @@ class PricingSection extends StatelessWidget {
                           ),
                         ),
                       ),
-                    if (isPopular) SizedBox(height: isMobile ? 4 : 12),
+                    if (plan.isPopular) SizedBox(height: isMobile ? 4 : 12),
                     Text(
-                      title,
+                      plan.title,
                       style: TextStyle(
                         fontSize: isMobile ? 24 : 28,
                         fontWeight: FontWeight.w900,
@@ -213,7 +197,7 @@ class PricingSection extends StatelessWidget {
                     ),
                     SizedBox(height: isMobile ? 2  : 8),
                     Text(
-                      subtitle,
+                      plan.subtitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: isMobile ? 12 : 14,
@@ -246,11 +230,11 @@ class PricingSection extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          price,
+                          plan.price,
                           style: TextStyle(
                             fontSize: isMobile ? 48 : 56,
                             fontWeight: FontWeight.w900,
-                            color: color,
+                            color: plan.color,
                             height: 0.9,
                           ),
                         ),
@@ -258,7 +242,7 @@ class PricingSection extends StatelessWidget {
                     ),
                     SizedBox(height: isMobile ? 6 : 8),
                     Text(
-                      '€$originalPrice',
+                      '€${plan.originalPrice}',
                       style: TextStyle(
                         fontSize: isMobile ? 16 : 18,
                         fontWeight: FontWeight.w700,
@@ -278,7 +262,7 @@ class PricingSection extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        'Économisez ${((1 - double.parse(price) / double.parse(originalPrice)) * 100).round()}%',
+                        'Économisez ${((1 - double.parse(plan.price) / double.parse(plan.originalPrice)) * 100).round()}%',
                         style: TextStyle(
                           fontSize: isMobile ? 12 : 14,
                           fontWeight: FontWeight.w900,
@@ -295,12 +279,12 @@ class PricingSection extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 24),
                   child: Column(
-                    children: features.map((feature) {
+                    children: plan.features.map((feature) {
                       return Padding(
                         padding: EdgeInsets.symmetric(vertical: isMobile ? 6 : 8),
                         child: Row(
                           children: [
-                            Icon(Icons.check_circle, color: color, size: isMobile ? 18 : 20),
+                            Icon(Icons.check_circle, color: plan.color, size: isMobile ? 18 : 20),
                             SizedBox(width: isMobile ? 8 : 12),
                             Expanded(
                               child: Text(
@@ -326,9 +310,9 @@ class PricingSection extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: onBuyNow,
+                    onPressed: () => onPlanSelected(plan),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: color,
+                      backgroundColor: plan.color,
                       foregroundColor: Colors.white,
                       padding: EdgeInsets.symmetric(vertical: isMobile ? 14 : 18),
                       shape: RoundedRectangleBorder(
@@ -339,7 +323,7 @@ class PricingSection extends StatelessWidget {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        'Choisir $title',
+                        'Choisir ${plan.title}',
                         style: TextStyle(
                           fontSize: isMobile ? 14 : 16,
                           fontWeight: FontWeight.w900,

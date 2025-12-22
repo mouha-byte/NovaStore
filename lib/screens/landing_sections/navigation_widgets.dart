@@ -221,14 +221,14 @@ class _NavigationWidgetsState extends State<NavigationWidgets> with SingleTicker
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Buy Now',
+                          'Buy Now-\nShipping on request',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
-                        SizedBox(width: 8),
-                        Icon(Icons.shopping_cart, size: 18),
+                        SizedBox(width: 15),
+                        Icon(Icons.shopping_cart, size: 25),
                       ],
                     ),
                   ),
@@ -352,7 +352,7 @@ class _NavigationWidgetsState extends State<NavigationWidgets> with SingleTicker
                         Icon(Icons.local_fire_department, size: 20),
                         SizedBox(width: 8),
                         Text(
-                          'Buy Now - 50% OFF',
+                          'Buy Now - 50% OFF\nShipping on request',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w900,
@@ -467,7 +467,7 @@ class FloatingActionButtons extends StatelessWidget {
                   Icon(Icons.local_fire_department, size: 20),
                   SizedBox(width: 8),
                   Text(
-                    'BUY NOW - 50% OFF',
+                    'BUY NOW - 50% OFF\nShipping on request',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w900,

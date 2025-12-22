@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../models/product_model.dart';
 import 'landing_constants.dart';
 import 'dart:async';
@@ -128,7 +129,8 @@ class _HeroSectionState extends State<HeroSection> {
               ),
             ],
           ),
-        ),
+        ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2, end: 0),
+        
         SizedBox(height: isMobile ? 20 : 30),
         Text(
           widget.product.title,
@@ -139,7 +141,8 @@ class _HeroSectionState extends State<HeroSection> {
             height: 1.1,
             letterSpacing: isMobile ? -1 : -2,
           ),
-        ),
+        ).animate().fadeIn(delay: 200.ms, duration: 600.ms).slideX(begin: -0.2, end: 0),
+        
         SizedBox(height: isMobile ? 16 : 20),
         Text(
           LandingConstants.heroSubtitle,
@@ -149,7 +152,8 @@ class _HeroSectionState extends State<HeroSection> {
             height: 1.5,
             fontWeight: FontWeight.w400,
           ),
-        ),
+        ).animate().fadeIn(delay: 400.ms, duration: 600.ms),
+        
         SizedBox(height: isMobile ? 24 : 40),
         Wrap(
           spacing: isMobile ? 12 : 24,
@@ -157,7 +161,8 @@ class _HeroSectionState extends State<HeroSection> {
           children: LandingConstants.heroBadges
               .map((badge) => _buildBadge(badge.icon, badge.text, isMobile))
               .toList(),
-        ),
+        ).animate().fadeIn(delay: 600.ms, duration: 600.ms).slideY(begin: 0.2, end: 0),
+        
         SizedBox(height: isMobile ? 32 : 50),
         SizedBox(
           width: isMobile ? double.infinity : null,
@@ -191,7 +196,8 @@ class _HeroSectionState extends State<HeroSection> {
               ],
             ),
           ),
-        ),
+        ).animate().fadeIn(delay: 800.ms, duration: 600.ms).scale(begin: const Offset(0.9, 0.9)),
+        
         const SizedBox(height: 16),
         Text(
           LandingConstants.heroFinePrint,
@@ -199,7 +205,7 @@ class _HeroSectionState extends State<HeroSection> {
             color: LandingConstants.mediumGray,
             fontSize: 14,
           ),
-        ),
+        ).animate().fadeIn(delay: 1000.ms),
       ],
     );
   }
@@ -270,25 +276,11 @@ class _HeroSectionState extends State<HeroSection> {
                 },
                 itemCount: LandingConstants.heroCarouselImages.length,
                 itemBuilder: (context, index) {
-                  return Image.network(
+                  return Image.asset(
                     LandingConstants.heroCarouselImages[index],
                     fit: BoxFit.cover,
                     width: double.infinity,
                     height: double.infinity,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: const Color(0xFFF3F4F6),
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
-                          ),
-                        ),
-                      );
-                    },
                     errorBuilder: (_, __, ___) => Container(
                       decoration: BoxDecoration(
                         color: const Color(0xFFF3F4F6),
@@ -376,7 +368,7 @@ class _HeroSectionState extends State<HeroSection> {
             ),
         ],
       ),
-    );
+    ).animate().fadeIn(delay: 400.ms, duration: 800.ms).slideX(begin: 0.1, end: 0, curve: Curves.easeOutCubic);
   }
 }
 

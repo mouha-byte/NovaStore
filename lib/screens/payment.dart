@@ -136,7 +136,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 child: isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text(
-                        'Pay with Card',
+                        'Pay with Card or Crypto USDT, BTC +200 …',
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
               ),

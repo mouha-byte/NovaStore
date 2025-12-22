@@ -269,7 +269,7 @@ class ProblemSolutionSections extends StatelessWidget {
     );
   }
 
-  Widget _buildLuxuryBenefitCard(
+  Widget  _buildLuxuryBenefitCard(
     IconData icon,
     String title,
     String description,

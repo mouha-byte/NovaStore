@@ -194,37 +194,46 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         const SizedBox(height: AppSpacing.md),
         
         Row(
-          children: [
+            children: [
             Expanded(
               child: TextFormField(
-                controller: _cityController,
-                decoration: const InputDecoration(
-                  labelText: 'City',
-                  prefixIcon: Icon(Icons.location_city),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Required';
-                  }
-                  return null;
-                },
+              controller: _cityController,
+              decoration: const InputDecoration(
+                labelText: 'City',
+                prefixIcon: Icon(Icons.location_city),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                return 'Required';
+                }
+                if (value.length < 2) {
+                return 'City name too short';
+                }
+                if (!RegExp(r'^[a-zA-Z\s\-]+$').hasMatch(value)) {
+                return 'Invalid city name';
+                }
+                return null;
+              },
               ).animate().fadeIn(delay: 200.ms).slideX(),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: TextFormField(
-                controller: _zipController,
-                decoration: const InputDecoration(
-                  labelText: 'ZIP Code',
-                  prefixIcon: Icon(Icons.markunread_mailbox),
-                ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Required';
-                  }
-                  return null;
-                },
+              controller: _zipController,
+              decoration: const InputDecoration(
+                labelText: 'ZIP Code',
+                prefixIcon: Icon(Icons.markunread_mailbox),
+              ),
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                return 'Required';
+                }
+                if (!RegExp(r'^\d{4,10}$').hasMatch(value)) {
+                return 'Invalid ZIP code';
+                }
+                return null;
+              },
               ).animate().fadeIn(delay: 300.ms).slideX(),
             ),
           ],
@@ -246,10 +255,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         TextFormField(
           controller: _emailController,
           decoration: const InputDecoration(
-            labelText: 'Email (Optional)',
+            labelText: 'Email',
             prefixIcon: Icon(Icons.email_outlined),
           ),
           keyboardType: TextInputType.emailAddress,
+          validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Required';
+                  }
+                  return null;
+                },
         ).animate().fadeIn(delay: 500.ms).slideX(),
       ],
     );
@@ -274,74 +289,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ).animate().fadeIn().slideX(),
         
         const SizedBox(height: AppSpacing.md),
-        
-        // Wallet option
-        GestureDetector(
-          onTap: user != null
-              ? () => setState(() => _paymentMethod = 'wallet')
-              : null,
-          child: Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: _paymentMethod == 'wallet' && hasEnoughBalance
-                  ? AppColors.primary.withOpacity(0.1)
-                  : Colors.white,
-              borderRadius: AppRadius.circular12,
-              border: Border.all(
-                color: _paymentMethod == 'wallet' && hasEnoughBalance
-                    ? AppColors.primary
-                    : AppColors.border,
-                width: 2,
-              ),
-            ),
-            child: Row(
-              children: [
-                Radio<String>(
-                  value: 'wallet',
-                  groupValue: _paymentMethod,
-                  onChanged: user != null
-                      ? (value) => setState(() => _paymentMethod = value!)
-                      : null,
-                  activeColor: AppColors.primary,
-                ),
-                const Icon(Icons.account_balance_wallet, size: 24, color: AppColors.primary),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Wallet Balance',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
-                        user != null
-                            ? '\$${walletBalance.toStringAsFixed(2)} available'
-                            : 'Login to use wallet',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: hasEnoughBalance
-                              ? AppColors.success
-                              : AppColors.error,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // if (!hasEnoughBalance && user != null)
-                //   TextButton(
-                //     onPressed: () => Navigator.pushNamed(context, '/wallet'),
-                //     child: const Text('Add Funds'),
-                //   ),
-              ],
-            ),
-          ),
-        ).animate().fadeIn(delay: 100.ms).slideX(),
-        
-        const SizedBox(height: AppSpacing.md),
+
         
         // Payeer option
         GestureDetector(

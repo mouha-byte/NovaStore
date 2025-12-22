@@ -94,6 +94,15 @@ flutter:
   assets:
     - web/icons/Icon-512.png
     - assets/product_image.png
+    - assets/images/
+    - assets/videos/
+    - assets/images/problems/
+    - assets/images/solution/
+    - assets/images/recommended/
+    - assets/images/mode_de_vie/
+    - assets/images/recommended/
+    - assets/images/clients/
+    - assets/images/testimonials/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

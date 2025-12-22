@@ -145,6 +145,35 @@ class _FloatingOfferButtonState extends State<FloatingOfferButton> {
                     ),
                   ],
                 ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                 
+                  Row(
+                    children: [
+                    Text(
+                      '55.98€',
+                      style: TextStyle(
+                      color: Colors.white.withOpacity(0.7),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      decoration: TextDecoration.lineThrough,
+                      decorationColor: Colors.white.withOpacity(0.7),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Text(
+                      '27.99€',
+                      style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    ],
+                  ),
+                  ],
+                ),
                 const SizedBox(height: 12),
                 // Countdown
                 Container(
@@ -187,7 +216,7 @@ class _FloatingOfferButtonState extends State<FloatingOfferButton> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    'Get It',
+                    'Get It now! Limited Stock, only a few left!',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: LandingConstants.redProblem,
