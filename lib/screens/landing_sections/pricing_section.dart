@@ -306,7 +306,7 @@ class PricingSection extends StatelessWidget {
               
               // Button
               Padding(
-                padding: EdgeInsets.all(isMobile ? 16 : 24),
+                padding: EdgeInsets.all(isMobile ? 10 : 24),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -314,9 +314,9 @@ class PricingSection extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: plan.color,
                       foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(vertical: isMobile ? 14 : 18),
+                      padding: EdgeInsets.symmetric(vertical: isMobile ? 10 : 18),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(isMobile ? 12 : 16),
+                        borderRadius: BorderRadius.circular(isMobile ? 8 : 16),
                       ),
                       elevation: 0,
                     ),
@@ -325,7 +325,7 @@ class PricingSection extends StatelessWidget {
                       child: Text(
                         'Choisir ${plan.title}',
                         style: TextStyle(
-                          fontSize: isMobile ? 14 : 16,
+                          fontSize: isMobile ? 12 : 16,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 0.5,
                         ),

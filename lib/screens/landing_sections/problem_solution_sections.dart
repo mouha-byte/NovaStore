@@ -294,14 +294,14 @@ class ProblemSolutionSections extends StatelessWidget {
         child: Stack(
           children: [
             // Image naturelle sans overlay de couleur
-            Positioned.fill(
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) =>
-                    Container(color: Colors.grey[200]),
-              ),
-            ),
+            // Positioned.fill(
+            //   child: Image.network(
+            //     imageUrl,
+            //     fit: BoxFit.cover,
+            //     errorBuilder: (_, __, ___) =>
+            //         Container(color: Colors.grey[200]),
+            //   ),
+            // ),
             // Gradient subtil pour la lisibilité du texte (sans couleur dominante)
             Positioned.fill(
               child: Container(

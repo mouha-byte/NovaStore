@@ -245,7 +245,7 @@ class FinalCTASection extends StatelessWidget {
             size: 32,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 12), 
         Text(
           label,
           style: const TextStyle(

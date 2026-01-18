@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:store_app2025/widgets/nova_store_logo.dart';
 import 'landing_constants.dart';
+import '../../services/theme_service.dart';
 
 class NavigationWidgets extends StatefulWidget {
   final bool isScrolled;
@@ -205,6 +207,8 @@ class _NavigationWidgetsState extends State<NavigationWidgets> with SingleTicker
                   const SizedBox(width: 30),
                   _buildNavLink('FAQ', widget.onFaqClick),
                   const SizedBox(width: 30),
+                 
+                  
                   ElevatedButton(
                     onPressed: widget.onBuyNow,
                     style: ElevatedButton.styleFrom(
@@ -326,6 +330,8 @@ class _NavigationWidgetsState extends State<NavigationWidgets> with SingleTicker
 
               const Divider(height: 32),
 
+             
+
               // Buy Now Button
               Padding(
                 padding:
@@ -414,7 +420,22 @@ class _NavigationWidgetsState extends State<NavigationWidgets> with SingleTicker
       ),
     );
   }
-}
+
+  Widget _buildThemeToggle(BuildContext context) {
+    final themeService = Provider.of<ThemeService>(context);
+    final isDark = themeService.isDarkMode;
+    
+    return IconButton(
+      onPressed: () => themeService.toggleTheme(),
+      icon: Icon(
+        isDark ? Icons.light_mode : Icons.dark_mode,
+        color: isDark ? Colors.yellow : Colors.grey[800],
+      ),
+      tooltip: isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode',
+    );
+  }
+
+ }
 
 // ==================== FLOATING ACTION BUTTONS ====================
 class FloatingActionButtons extends StatelessWidget {

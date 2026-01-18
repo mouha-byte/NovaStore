@@ -127,7 +127,7 @@ class _FloatingOfferButtonState extends State<FloatingOfferButton> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      '50% RÉDUCTION',
+                      '50% Reduction',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,

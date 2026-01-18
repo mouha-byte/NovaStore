@@ -26,17 +26,18 @@ class FeaturesSection extends StatelessWidget {
                   letterSpacing: -1,
                 ),
               ),
-              const SizedBox(height: 30),
-              Text(
-                LandingConstants.featuresDescription,
-                textAlign: TextAlign.center,
-                style: TextStyle(
+                const SizedBox(height: 30),
+                if (MediaQuery.of(context).size.width > 600)
+                Text(
+                  LandingConstants.featuresDescription,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
                   fontSize: 20,
                   color: Colors.grey[600],
                   height: 1.6,
                   fontWeight: FontWeight.w400,
+                  ),
                 ),
-              ),
               const SizedBox(height: 80),
               _buildFeaturesGrid(),
             ],
